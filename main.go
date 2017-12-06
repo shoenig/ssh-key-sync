@@ -3,32 +3,22 @@
 package main
 
 import (
-	"flag"
 	"fmt"
 	"os"
 
+	"github.com/shoenig/ssh-key-sync/internal/command"
+	"github.com/shoenig/ssh-key-sync/internal/config"
 	"github.com/shoenig/ssh-key-sync/internal/github"
 )
 
 func main() {
-	username := parseArgs()
-
+	args := config.ParseArguments()
+	loader := config.NewLoader(args.ConfigFile)
 	client := github.NewClient(nil)
 
-	keys, err := client.GetKeys(username)
-	if err != nil {
-		fmt.Println(err)
+	execer := command.NewExecer(loader, client)
+	if err := execer.Exec(); err != nil {
+		fmt.Printf("ssh-key-sync had error: %s\n", err)
 		os.Exit(1)
 	}
-
-	for _, key := range keys {
-		fmt.Println(key)
-	}
-}
-
-func parseArgs() string {
-	var username string
-	flag.StringVar(&username, "username", "", "the github username")
-	flag.Parse()
-	return username
 }
