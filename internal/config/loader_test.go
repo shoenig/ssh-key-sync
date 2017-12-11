@@ -19,16 +19,16 @@ func Test_Loader(t *testing.T) {
 		{Username: "bob", AuthorizedKeysFile: "/home/bob/authorized_keys"},
 	}
 
-	if len(accounts) != len(opts.Github) {
+	if len(accounts) != len(opts.Github.Accounts) {
 		t.Fatalf(
 			"number of expected accounts (%d) and number of actual accounts (%d) differ",
 			len(accounts),
-			len(opts.Github),
+			len(opts.Github.Accounts),
 		)
 	}
 
 	for i := range accounts {
-		result := opts.Github[i]
+		result := opts.Github.Accounts[i]
 		exp := accounts[i]
 		if result.Username != exp.Username {
 			t.Fatalf("account[%d].Username does not match, got: %v, exp: %v", i, result, exp)

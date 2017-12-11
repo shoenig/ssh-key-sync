@@ -42,6 +42,7 @@ func (s sortByMetadata) Less(a, b int) bool {
 	return s.metaLess(a, b)
 }
 
+// compare asciibetically by user, then host, then value
 func (s sortByMetadata) metaLess(a, b int) bool {
 	if s[a].User < s[b].User {
 		return true

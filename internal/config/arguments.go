@@ -16,7 +16,9 @@ func ParseArguments() Arguments {
 		"/etc/ssh-key-sync.conf",
 		"specify the configuration file location",
 	)
+
 	flag.Parse()
+
 	return Arguments{
 		ConfigFile: configFile,
 	}

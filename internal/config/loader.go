@@ -7,15 +7,24 @@ import (
 	"os"
 )
 
-type Options struct {
-	Github []struct {
-		Username           string `json:"username"`
-		AuthorizedKeysFile string `json:"authorized_keys_file"`
-	} `json:"github"`
-}
+//go:generate mockery -interface=Loader -package=configtest
 
 type Loader interface {
 	Load() (Options, error)
+}
+
+type Github struct {
+	URL      string          `json:"url"`
+	Accounts []GithubAccount `json:"accounts"`
+}
+
+type GithubAccount struct {
+	Username           string `json:"username"`
+	AuthorizedKeysFile string `json:"authorized_keys_file"`
+}
+
+type Options struct {
+	Github Github `json:"github"`
 }
 
 func NewLoader(filepath string) Loader {

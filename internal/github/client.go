@@ -19,6 +19,8 @@ const (
 	apiHeader   = "application/vnd.github.v3+json"
 )
 
+//go:generate mockery -interface=Client
+
 // A Client is used to acquire keys from github.com.
 type Client interface {
 	GetKeys(user string) ([]string, error)
@@ -29,10 +31,11 @@ type Options struct {
 }
 
 func (opts *Options) url() string {
-	if opts.URL == "" {
+	url := strings.TrimSpace(opts.URL)
+	if url == "" {
 		return defaultURL
 	}
-	return opts.URL
+	return url
 }
 
 // NewClient creates a Client that can be used to communicate
