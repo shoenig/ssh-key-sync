@@ -21,17 +21,17 @@ func (k Key) String() string {
 	)
 }
 
-type sortByMetadata []Key
+type KeySorter []Key
 
-func (s sortByMetadata) Len() int {
+func (s KeySorter) Len() int {
 	return len(s)
 }
 
-func (s sortByMetadata) Swap(a, b int) {
+func (s KeySorter) Swap(a, b int) {
 	s[a], s[b] = s[b], s[a]
 }
 
-func (s sortByMetadata) Less(a, b int) bool {
+func (s KeySorter) Less(a, b int) bool {
 	// unmanaged keys should be listed before managed keys
 	if s[a].Managed && !s[b].Managed {
 		return false
@@ -43,7 +43,7 @@ func (s sortByMetadata) Less(a, b int) bool {
 }
 
 // compare asciibetically by user, then host, then value
-func (s sortByMetadata) metaLess(a, b int) bool {
+func (s KeySorter) metaLess(a, b int) bool {
 	if s[a].User < s[b].User {
 		return true
 	} else if s[a].User > s[b].User {

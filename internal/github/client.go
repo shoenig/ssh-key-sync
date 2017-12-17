@@ -10,6 +10,7 @@ import (
 	"strings"
 	"time"
 
+	"github.com/shoenig/ssh-key-sync/internal/ssh"
 	"github.com/shoenig/toolkit"
 )
 
@@ -19,11 +20,11 @@ const (
 	apiHeader   = "application/vnd.github.v3+json"
 )
 
-//go:generate mockery -interface=Client
+//go:generate mockery -interface=Client -package githubtest
 
 // A Client is used to acquire keys from github.com.
 type Client interface {
-	GetKeys(user string) ([]string, error)
+	GetKeys(user string) ([]ssh.Key, error)
 }
 
 type Options struct {
@@ -57,26 +58,30 @@ type githubClient struct {
 	client *http.Client
 }
 
-type sshKey struct {
+type jsonKey struct {
 	ID  int    `json:"id"`
 	Key string `json:"key"`
 }
 
-func (g *githubClient) GetKeys(user string) ([]string, error) {
+func (g *githubClient) GetKeys(user string) ([]ssh.Key, error) {
 	url := combineURL(g.url, strings.Replace(sshKeysPath, "USERNAME", user, 1))
 
-	var sshkeys []sshKey
+	var jsonkeys []jsonKey
 
-	if err := g.doGet(url, &sshkeys); err != nil {
+	if err := g.doGet(url, &jsonkeys); err != nil {
 		return nil, err
 	}
 
-	keys := make([]string, 0, len(sshkeys))
-	for _, key := range sshkeys {
-		keys = append(keys, key.Key)
+	keys := make([]ssh.Key, 0, len(jsonkeys))
+	for _, jsonkey := range jsonkeys {
+		parsed, err := ssh.ParseKey(jsonkey.Key, true)
+		if err != nil {
+			return nil, err
+		}
+		keys = append(keys, parsed)
 	}
 
-	sort.Strings(keys)
+	sort.Sort(ssh.KeySorter(keys))
 
 	return keys, nil
 }

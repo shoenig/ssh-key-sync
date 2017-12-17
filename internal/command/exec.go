@@ -6,6 +6,8 @@ import (
 	"fmt"
 	"os"
 	"path/filepath"
+	"sort"
+	"time"
 
 	"github.com/shoenig/ssh-key-sync/internal/config"
 	"github.com/shoenig/ssh-key-sync/internal/github"
@@ -73,7 +75,32 @@ func (e *execer) processGithub(account config.GithubAccount) error {
 
 	fmt.Printf("retrieved %d github keys for user %q: %v\n", len(githubKeys), user, githubKeys)
 
+	// 4) combine the keys for the complete new set
+	newKeys := combine(onlyUnmanaged(localKeys), githubKeys)
+
+	s := generateFileContent(newKeys, time.Now())
+	fmt.Println("new keys:\n", s)
+
 	return nil
+}
+
+func combine(keysets ...[]ssh.Key) []ssh.Key {
+	result := make([]ssh.Key, 0, 10)
+	for _, keyset := range keysets {
+		result = append(result, keyset...)
+	}
+	sort.Sort(ssh.KeySorter(result))
+	return result
+}
+
+func onlyUnmanaged(keys []ssh.Key) []ssh.Key {
+	unmanaged := make([]ssh.Key, 0, len(keys))
+	for _, key := range keys {
+		if !key.Managed {
+			unmanaged = append(unmanaged, key)
+		}
+	}
+	return unmanaged
 }
 
 func touch(path string) error {

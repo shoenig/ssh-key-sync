@@ -8,12 +8,14 @@ import (
 	"github.com/shoenig/ssh-key-sync/internal/config"
 	"github.com/shoenig/ssh-key-sync/internal/config/configtest"
 	"github.com/shoenig/ssh-key-sync/internal/github/githubtest"
+	"github.com/shoenig/ssh-key-sync/internal/ssh/sshtest"
 	"github.com/stretchr/testify/require"
 )
 
 func Test_Exec(t *testing.T) {
 	loader := &configtest.Loader{}
 	client := &githubtest.Client{}
+	reader := &sshtest.KeysReader{}
 
 	loader.On("Load").Return(config.Options{
 		Github: config.Github{
@@ -33,11 +35,12 @@ func Test_Exec(t *testing.T) {
 		[]string{"key1"}, nil,
 	).Once()
 
-	execer := NewExecer(loader, client)
+	execer := NewExecer(loader, reader, client)
 
 	err := execer.Exec()
 	require.NoError(t, err)
 
 	loader.AssertExpectations(t)
+	reader.AssertExpectations(t)
 	client.AssertExpectations(t)
 }

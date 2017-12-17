@@ -10,6 +10,8 @@ import (
 	"strings"
 )
 
+//go:generate mockery -interface=KeysReader -package sshtest
+
 type KeysReader interface {
 	ReadKeys(filename string) ([]Key, error)
 }
@@ -38,7 +40,7 @@ func (kr *keysReader) ReadKeys(filename string) ([]Key, error) {
 		case isIgnorable(line):
 			continue
 		default:
-			key, err := parseKey(line, managed)
+			key, err := ParseKey(line, managed)
 			if err != nil {
 				return nil, err
 			}
@@ -47,7 +49,7 @@ func (kr *keysReader) ReadKeys(filename string) ([]Key, error) {
 		}
 	}
 
-	sort.Sort(sortByMetadata(keys))
+	sort.Sort(KeySorter(keys))
 
 	return keys, s.Err()
 }
@@ -60,7 +62,7 @@ func isIgnorable(line string) bool {
 	return line == "" || strings.HasPrefix(line, "#")
 }
 
-func parseKey(line string, managed bool) (Key, error) {
+func ParseKey(line string, managed bool) (Key, error) {
 	parts := strings.Fields(line)
 	if len(parts) < 2 || len(parts) > 3 {
 		return Key{}, errors.New("key format is not well formed")

@@ -75,7 +75,7 @@ func Test_sortByMetadata(t *testing.T) {
 		key(false, "alice", "h1", "iznei"),
 	}
 
-	sort.Sort(sortByMetadata(keys))
+	sort.Sort(KeySorter(keys))
 
 	expected := []Key{
 		key(false, "alice", "h1", "iznei"),
