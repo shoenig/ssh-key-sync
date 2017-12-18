@@ -15,8 +15,8 @@ func Test_Loader(t *testing.T) {
 		Username           string
 		AuthorizedKeysFile string
 	}{
-		{Username: "alice", AuthorizedKeysFile: "/home/alice/authorized_keys"},
-		{Username: "bob", AuthorizedKeysFile: "/home/bob/authorized_keys"},
+		{Username: "alice", AuthorizedKeysFile: "/tmp/home/alice/authorized_keys"},
+		{Username: "bob", AuthorizedKeysFile: "/tmp/home/bob/authorized_keys"},
 	}
 
 	if len(accounts) != len(opts.Github.Accounts) {

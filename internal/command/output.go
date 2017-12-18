@@ -4,6 +4,10 @@ package command
 
 import (
 	"bytes"
+	"io"
+	"io/ioutil"
+	"os"
+	"strings"
 	"time"
 
 	"github.com/shoenig/ssh-key-sync/internal/ssh"
@@ -30,4 +34,29 @@ func generateFileContent(keys []ssh.Key, now time.Time) string {
 	}
 
 	return buf.String()
+}
+
+// safely write to a tmp file and then do an atomic rename
+func writeToFile(file, content string) error {
+	f, err := ioutil.TempFile("", "ssh-key-sync-")
+	if err != nil {
+		return err
+	}
+
+	reader := strings.NewReader(content)
+
+	if _, err := io.Copy(f, reader); err != nil {
+		return err
+	}
+
+	if err := f.Sync(); err != nil {
+		return err
+	}
+
+	if err := f.Close(); err != nil {
+		return err
+	}
+
+	// atmoically rename the file
+	return os.Rename(f.Name(), file)
 }

@@ -8,6 +8,7 @@ import (
 	"github.com/shoenig/ssh-key-sync/internal/config"
 	"github.com/shoenig/ssh-key-sync/internal/config/configtest"
 	"github.com/shoenig/ssh-key-sync/internal/github/githubtest"
+	"github.com/shoenig/ssh-key-sync/internal/ssh"
 	"github.com/shoenig/ssh-key-sync/internal/ssh/sshtest"
 	"github.com/stretchr/testify/require"
 )
@@ -21,18 +22,34 @@ func Test_Exec(t *testing.T) {
 		Github: config.Github{
 			URL: "https://api.github.com",
 			Accounts: []config.GithubAccount{
-				{Username: "billybob", AuthorizedKeysFile: "/home/bob/keys.txt"},
-				{Username: "sadsally", AuthorizedKeysFile: "/home/sally/.ssh/authorized_keys"},
+				{Username: "billybob", AuthorizedKeysFile: "/tmp/home/bob/keys.txt"},
+				{Username: "sadsally", AuthorizedKeysFile: "/tmp/home/sally/.ssh/authorized_keys"},
 			},
 		},
 	}, nil).Once()
 
+	bob1 := ssh.Key{Managed: false, Value: "aaaaaaa", User: "bob", Host: "b1"}
+	bob2 := ssh.Key{Managed: false, Value: "bbbbbbb", User: "bob", Host: "b2"}
+	bob3 := ssh.Key{Managed: true, Value: "ccccccc", User: "bob", Host: "b1"}
+	bob4 := ssh.Key{Managed: true, Value: "ddddddd", User: "bob", Host: "b3"}
+	sally1 := ssh.Key{Managed: false, Value: "jjjjjjj", User: "sally", Host: "s1"}
+	sally2 := ssh.Key{Managed: false, Value: "kkkkkkk", User: "sally", Host: "s2"}
+	sally3 := ssh.Key{Managed: true, Value: "lllllll", User: "sally", Host: "s3"}
+
+	reader.On("ReadKeys", "/tmp/home/bob/keys.txt").Return(
+		[]ssh.Key{bob1, bob2}, nil,
+	)
+
+	reader.On("ReadKeys", "/tmp/home/sally/.ssh/authorized_keys").Return(
+		[]ssh.Key{sally1, sally2}, nil,
+	)
+
 	client.On("GetKeys", "billybob").Return(
-		[]string{"one", "two"}, nil,
+		[]ssh.Key{bob3, bob4}, nil,
 	).Once()
 
 	client.On("GetKeys", "sadsally").Return(
-		[]string{"key1"}, nil,
+		[]ssh.Key{sally3}, nil,
 	).Once()
 
 	execer := NewExecer(loader, reader, client)

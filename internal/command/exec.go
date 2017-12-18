@@ -73,15 +73,14 @@ func (e *execer) processGithub(account config.GithubAccount) error {
 		return fmt.Errorf("failed to retrieve github keys for user %q: %v", user, err)
 	}
 
-	fmt.Printf("retrieved %d github keys for user %q: %v\n", len(githubKeys), user, githubKeys)
+	fmt.Printf("retrieved %d github keys for user %q\n", len(githubKeys), user)
 
 	// 4) combine the keys for the complete new set
 	newKeys := combine(onlyUnmanaged(localKeys), githubKeys)
+	content := generateFileContent(newKeys, time.Now())
 
-	s := generateFileContent(newKeys, time.Now())
-	fmt.Println("new keys:\n", s)
-
-	return nil
+	// 5) write the keys to the authorized keys file
+	return writeToFile(account.AuthorizedKeysFile, content)
 }
 
 func combine(keysets ...[]ssh.Key) []ssh.Key {

@@ -3,12 +3,26 @@
 package command
 
 import (
+	"io/ioutil"
+	"os"
+	"path/filepath"
 	"testing"
 	"time"
 
 	"github.com/shoenig/ssh-key-sync/internal/ssh"
 	"github.com/stretchr/testify/require"
 )
+
+func Test_writeToFile(t *testing.T) {
+	tmpFilename := filepath.Join(os.TempDir(), "test1")
+
+	err := writeToFile(tmpFilename, "abc123")
+	require.NoError(t, err)
+
+	bs, err := ioutil.ReadFile(tmpFilename)
+	require.NoError(t, err)
+	require.Equal(t, "abc123", string(bs))
+}
 
 func Test_generateFileContent(t *testing.T) {
 
