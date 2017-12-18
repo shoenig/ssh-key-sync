@@ -19,11 +19,15 @@ func Test_Exec(t *testing.T) {
 	reader := &sshtest.KeysReader{}
 
 	loader.On("Load").Return(config.Options{
+		System: []config.User{
+			{User: "bob", AuthorizedKeysFile: "/tmp/home/bob/keys.txt"},
+			{User: "sally", AuthorizedKeysFile: "/tmp/home/sally/.ssh/authorized_keys"},
+		},
 		Github: config.Github{
 			URL: "https://api.github.com",
 			Accounts: []config.GithubAccount{
-				{Username: "billybob", AuthorizedKeysFile: "/tmp/home/bob/keys.txt"},
-				{Username: "sadsally", AuthorizedKeysFile: "/tmp/home/sally/.ssh/authorized_keys"},
+				{Username: "billybob", SystemUser: "bob"},
+				{Username: "sadsally", SystemUser: "sally"},
 			},
 		},
 	}, nil).Once()
@@ -52,9 +56,10 @@ func Test_Exec(t *testing.T) {
 		[]ssh.Key{sally3}, nil,
 	).Once()
 
-	execer := NewExecer(loader, reader, client)
+	ex := NewExecer(loader, reader, client)
+	ex.(*execer).fakeChown = true
 
-	err := execer.Exec()
+	err := ex.Exec()
 	require.NoError(t, err)
 
 	loader.AssertExpectations(t)

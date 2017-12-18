@@ -2,7 +2,11 @@
 
 package config
 
-import "testing"
+import (
+	"testing"
+
+	"github.com/stretchr/testify/require"
+)
 
 func Test_Loader(t *testing.T) {
 	l := NewLoader("../../hack/tests/config.1")
@@ -11,32 +15,21 @@ func Test_Loader(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	accounts := []struct {
-		Username           string
-		AuthorizedKeysFile string
-	}{
-		{Username: "alice", AuthorizedKeysFile: "/tmp/home/alice/authorized_keys"},
-		{Username: "bob", AuthorizedKeysFile: "/tmp/home/bob/authorized_keys"},
+	exp := Options{
+		System: []User{
+			{User: "bobby", AuthorizedKeysFile: "/tmp/home/bobby/authorized_keys"},
+			{User: "alice", AuthorizedKeysFile: "/tmp/home/alice/authorized_keys"},
+		},
+		Github: Github{
+			URL: "github.com",
+			Accounts: []GithubAccount{
+				{Username: "alice", SystemUser: "alice"},
+				{Username: "bob", SystemUser: "bobby"},
+			},
+		},
 	}
 
-	if len(accounts) != len(opts.Github.Accounts) {
-		t.Fatalf(
-			"number of expected accounts (%d) and number of actual accounts (%d) differ",
-			len(accounts),
-			len(opts.Github.Accounts),
-		)
-	}
-
-	for i := range accounts {
-		result := opts.Github.Accounts[i]
-		exp := accounts[i]
-		if result.Username != exp.Username {
-			t.Fatalf("account[%d].Username does not match, got: %v, exp: %v", i, result, exp)
-		}
-		if result.AuthorizedKeysFile != exp.AuthorizedKeysFile {
-			t.Fatalf("account[%d].AuthorizedKeysFile does not match, got: %v, exp: %v", i, result, exp)
-		}
-	}
+	require.Equal(t, exp, opts)
 }
 
 func Test_Loader_noFile(t *testing.T) {

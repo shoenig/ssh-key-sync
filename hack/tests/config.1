@@ -1,9 +1,14 @@
 {
+    "system": [
+        {"user": "bobby", "authorized_keys_file": "/tmp/home/bobby/authorized_keys"},
+        {"user": "alice", "authorized_keys_file": "/tmp/home/alice/authorized_keys"}
+    ],
+
     "github": {
         "url": "github.com",
         "accounts": [
-            {"username": "alice", "authorized_keys_file": "/tmp/home/alice/authorized_keys"},
-            {"username": "bob", "authorized_keys_file": "/tmp/home/bob/authorized_keys"}
+            {"username": "alice", "system_user": "alice"},
+            {"username": "bob", "system_user": "bobby"}
         ]
     }
 }
