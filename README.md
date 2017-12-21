@@ -44,7 +44,7 @@ represents execution of `ssh-key-sync`, and a timer file which represents the sc
 on which the service should be executed. Use the example below, modifying paths to
 suite your needs.
 
-##### The service file `/etc/ssh-key-sync.service`
+##### The service file `/etc/systemd/system/ssh-key-sync.service`
 ```
 [Unit]
 Description=Synchronize ssh authorized keys with public keys from github.
