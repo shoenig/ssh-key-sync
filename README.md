@@ -36,3 +36,38 @@ Use the following example as a template for creating a configuration file.
     }
 }
 ```
+
+### Systemd Timer
+A great way to keep authorized_key files updated is to run `ssh-key-sync` periodically
+via a systemd timer. To set this up, we will need two files - one service file which
+represents execution of `ssh-key-sync`, and a timer file which represents the schedule
+on which the service should be executed. Use the example below, modifying paths to
+suite your needs.
+
+##### The service file `/etc/ssh-key-sync.service`
+```
+[Unit]
+Description=Synchronize ssh authorized keys with public keys from github.
+
+[Service]
+ExecStart=/opt/keys/ssh-key-sync --configfile /opt/keys/config.json
+```
+
+##### The timer file `/etc/systemd/system/ssh-key-sync.timer`
+```
+[Unit]
+Description=Run ssk-key-sync every hour
+
+[Timer]
+OnBootSec=5min
+OnUnitActiveSec=1h
+Unit=ssh-key-sync.service
+
+[Install]
+WantedBy=timers.target
+```
+
+##### Enable the timer
+```
+systemctl enable myscript.timer
+```
