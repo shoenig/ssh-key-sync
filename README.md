@@ -4,7 +4,7 @@ ssh-key-sync
 `ssh-key-sync` is a tool written in Go for managing `authorized_key` files, by synchronizing
 the contents with public keys managed by accounts on https://github.com
 
-[![Go Report Card](https://goreportcard.com/badge/github.com/shoenig/ssh-key-sync)](https://goreportcard.com/report/github.com/shoenig/ssh-key-sync)
+[![Go Report Card](https://goreportcard.com/badge/github.com/shoenig/ssh-key-sync)](https://goreportcard.com/report/github.com/shoenig/ssh-key-sync) [![Build Status](https://travis-ci.org/shoenig/ssh-key-sync.svg?branch=master)](https://travis-ci.org/shoenig/ssh-key-sync) [![GoDoc](https://godoc.org/github.com/shoenig/ssh-key-sync?status.svg)](https://godoc.org/github.com/shoenig/ssh-key-sync) [![License](https://img.shields.io/github/license/shoenig/ssh-key-sync.svg?style=flat-square)](LICENSE)
 
 ### Install
 Currently, `ssh-key-sync` must be compiled and installed manually. With a typical Go workspace,
