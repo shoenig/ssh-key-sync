@@ -4,6 +4,8 @@
 package command
 
 import (
+	"os"
+	"path/filepath"
 	"testing"
 
 	"github.com/shoenig/ssh-key-sync/internal/config"
@@ -14,15 +16,27 @@ import (
 	"github.com/stretchr/testify/require"
 )
 
+func mkdirs(t *testing.T, fp string) {
+	dirs := filepath.Dir(fp)
+	err := os.MkdirAll(dirs, 0700)
+	require.NoError(t, err)
+}
+
 func Test_Exec(t *testing.T) {
+	keyBob := "/tmp/home/bob/keys.txt"
+	keySally := "/tmp/home/sally/.ssh/authorized_keys"
+
+	mkdirs(t, keyBob)
+	mkdirs(t, keySally)
+
 	loader := &configtest.Loader{}
 	client := &githubtest.Client{}
 	reader := &sshtest.KeysReader{}
 
 	loader.On("Load").Return(config.Options{
 		System: []config.User{
-			{User: "bob", AuthorizedKeysFile: "/tmp/home/bob/keys.txt"},
-			{User: "sally", AuthorizedKeysFile: "/tmp/home/sally/.ssh/authorized_keys"},
+			{User: "bob", AuthorizedKeysFile: keyBob},
+			{User: "sally", AuthorizedKeysFile: keySally},
 		},
 		Github: config.Github{
 			URL: "https://api.github.com",
@@ -41,11 +55,11 @@ func Test_Exec(t *testing.T) {
 	sally2 := ssh.Key{Managed: false, Value: "kkkkkkk", User: "sally", Host: "s2"}
 	sally3 := ssh.Key{Managed: true, Value: "lllllll", User: "sally", Host: "s3"}
 
-	reader.On("ReadKeys", "/tmp/home/bob/keys.txt").Return(
+	reader.On("ReadKeys", keyBob).Return(
 		[]ssh.Key{bob1, bob2}, nil,
 	)
 
-	reader.On("ReadKeys", "/tmp/home/sally/.ssh/authorized_keys").Return(
+	reader.On("ReadKeys", keySally).Return(
 		[]ssh.Key{sally1, sally2}, nil,
 	)
 

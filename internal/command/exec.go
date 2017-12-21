@@ -7,7 +7,6 @@ import (
 	"fmt"
 	"os"
 	"os/user"
-	"path/filepath"
 	"sort"
 	"strconv"
 	"time"
@@ -35,9 +34,11 @@ func NewExecer(
 }
 
 type execer struct {
-	loader    config.Loader
-	reader    ssh.KeysReader
-	client    github.Client
+	loader config.Loader
+	reader ssh.KeysReader
+	client github.Client
+
+	// testing configuration only
 	fakeChown bool
 }
 
@@ -114,12 +115,6 @@ func onlyUnmanaged(keys []ssh.Key) []ssh.Key {
 }
 
 func (e *execer) touch(path, username string) error {
-	dirs := filepath.Dir(path)
-
-	if err := os.MkdirAll(dirs, 0700); err != nil {
-		return err
-	}
-
 	f, err := os.OpenFile(path, os.O_APPEND|os.O_CREATE|os.O_RDONLY, 0600)
 	if err != nil {
 		return err
