@@ -25,7 +25,7 @@ Use the following example as a template for creating a configuration file.
 ```
 {
     "system": [
-        {"user": "clarkk", "authorized_keys_file": "/home/clarkk/authorized_keys"},
+        {"user": "clarkk", "authorized_keys_file": "/home/clarkk/.ssh/authorized_keys"},
     ],
 
     "github": {

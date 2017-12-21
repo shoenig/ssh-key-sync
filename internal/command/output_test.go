@@ -17,7 +17,8 @@ import (
 func Test_writeToFile(t *testing.T) {
 	tmpFilename := filepath.Join(os.TempDir(), "test1")
 
-	err := writeToFile(tmpFilename, "abc123")
+	e := &execer{fakeChown: true}
+	err := e.writeToFile(tmpFilename, "somebody", "abc123")
 	require.NoError(t, err)
 
 	bs, err := ioutil.ReadFile(tmpFilename)

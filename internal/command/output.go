@@ -38,7 +38,7 @@ func generateFileContent(keys []ssh.Key, now time.Time) string {
 }
 
 // safely write to a tmp file and then do an atomic rename
-func writeToFile(file, content string) error {
+func (e *execer) writeToFile(file, user, content string) error {
 	f, err := ioutil.TempFile("", "ssh-key-sync-")
 	if err != nil {
 		return err
@@ -50,11 +50,18 @@ func writeToFile(file, content string) error {
 		return err
 	}
 
+	// flush the tmpfile complettely to disk
 	if err := f.Sync(); err != nil {
 		return err
 	}
 
+	// close the tmpfile
 	if err := f.Close(); err != nil {
+		return err
+	}
+
+	// chown the file to user
+	if err := e.touch(f.Name(), user); err != nil {
 		return err
 	}
 

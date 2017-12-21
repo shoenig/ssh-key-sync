@@ -84,7 +84,7 @@ func (e *execer) processUser(user, keyfile string, users2github map[string]strin
 	content := generateFileContent(newKeys, time.Now())
 
 	// 5) write the new file content to the authorized keys file
-	return writeToFile(keyfile, content)
+	return e.writeToFile(keyfile, user, content)
 }
 
 func (e *execer) keysFromGithub(user string, users2github map[string]string) ([]ssh.Key, error) {
