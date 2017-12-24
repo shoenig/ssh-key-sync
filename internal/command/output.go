@@ -22,7 +22,7 @@ func generateFileContent(keys []ssh.Key, now time.Time) string {
 
 	for _, key := range keys {
 		if key.Managed {
-			buf.WriteString("\n# managed by ssh-key-sync\n")
+			buf.WriteString("# managed by ssh-key-sync\n")
 		}
 		buf.WriteString(key.Value)
 		if key.User != "" && key.Host != "" {
@@ -31,7 +31,7 @@ func generateFileContent(keys []ssh.Key, now time.Time) string {
 			buf.WriteString("@")
 			buf.WriteString(key.Host)
 		}
-		buf.WriteString("\n")
+		buf.WriteString("\n\n")
 	}
 
 	return buf.String()
