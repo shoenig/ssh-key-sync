@@ -6,6 +6,7 @@ package netapi
 import (
 	"fmt"
 	"net/http"
+	"strings"
 	"time"
 
 	"github.com/shoenig/ssh-key-sync/internal/meta"
@@ -34,9 +35,16 @@ type Options struct {
 
 func (o Options) url(defaultURL string) string {
 	if o.URL == "" {
-		return defaultURL
+		return transportize(defaultURL)
 	}
-	return o.URL
+	return transportize(o.URL)
+}
+
+func transportize(url string) string {
+	if !strings.HasPrefix(url, "http") {
+		return "https://" + url
+	}
+	return url
 }
 
 var (
