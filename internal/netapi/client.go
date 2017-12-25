@@ -4,9 +4,11 @@
 package netapi
 
 import (
+	"fmt"
 	"net/http"
 	"time"
 
+	"github.com/shoenig/ssh-key-sync/internal/meta"
 	"github.com/shoenig/ssh-key-sync/internal/ssh"
 )
 
@@ -40,4 +42,7 @@ func (o Options) url(defaultURL string) string {
 var (
 	// a shared http client with a default timeout
 	httpClient = &http.Client{Timeout: 10 * time.Second}
+
+	// the user-agent to use for all http requests
+	useragent = fmt.Sprintf("ssh-key-sync bot/%s (https://github.com/shoenig/ssh-key-sync)", meta.Version)
 )

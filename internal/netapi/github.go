@@ -72,6 +72,7 @@ func (g *githubClient) doGet(url string, i interface{}) error {
 		return err
 	}
 	request.Header.Set("Accept", githubAcceptHeaderValue)
+	request.Header.Set("User-Agent", useragent)
 
 	response, err := g.client.Do(request)
 	if err != nil {
