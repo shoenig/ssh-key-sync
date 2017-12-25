@@ -1,12 +1,32 @@
 // Author hoenig
+// License MIT
 
 package netapi
 
 import (
+	"net/http"
+	"net/http/httptest"
 	"testing"
 
 	"github.com/stretchr/testify/require"
 )
+
+type optioner struct {
+	opts *Options
+}
+
+func (o optioner) Options() *Options {
+	return o.opts
+}
+
+func makeServer(h http.HandlerFunc) (Optioner, *httptest.Server) {
+	ts := httptest.NewServer(h)
+	opts := &Options{
+		URL:   ts.URL,
+		Token: "abc123",
+	}
+	return optioner{opts: opts}, ts
+}
 
 func Test_Options_url(t *testing.T) {
 	o := &Options{
