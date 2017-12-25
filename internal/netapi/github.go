@@ -1,7 +1,7 @@
 // Author hoenig
 // License MIT
 
-package github
+package netapi
 
 import (
 	"encoding/json"
@@ -9,48 +9,27 @@ import (
 	"net/http"
 	"sort"
 	"strings"
-	"time"
 
 	"github.com/shoenig/ssh-key-sync/internal/ssh"
 	"github.com/shoenig/toolkit"
 )
 
 const (
-	defaultURL  = "https://api.github.com"
-	sshKeysPath = "/users/USERNAME/keys"
-	apiHeader   = "application/vnd.github.v3+json"
+	githubURL               = "https://api.github.com"
+	githubKeysPath          = "/users/USERNAME/keys"
+	githubAcceptHeaderValue = "application/vnd.github.v3+json"
 )
 
-//go:generate mockery -interface=Client -package githubtest
-
-// A Client is used to acquire keys from github.com.
-type Client interface {
-	GetKeys(user string) ([]ssh.Key, error)
-}
-
-type Options struct {
-	URL string `json:"url"`
-}
-
-func (opts *Options) url() string {
-	url := strings.TrimSpace(opts.URL)
-	if url == "" {
-		return defaultURL
-	}
-	return url
-}
-
-// NewClient creates a Client that can be used to communicate
+// NewGithubClient creates a Client that can be used to communicate
 // with the github API.
-func NewClient(opts *Options) Client {
+func NewGithubClient(options Optioner) Client {
+	opts := options.Options()
 	if opts == nil {
 		opts = &Options{}
 	}
 	return &githubClient{
-		url: opts.url(),
-		client: &http.Client{
-			Timeout: 10 * time.Second,
-		},
+		url:    opts.url(githubURL),
+		client: httpClient,
 	}
 }
 
@@ -59,15 +38,15 @@ type githubClient struct {
 	client *http.Client
 }
 
-type jsonKey struct {
+type githubKeySSH struct {
 	ID  int    `json:"id"`
 	Key string `json:"key"`
 }
 
 func (g *githubClient) GetKeys(user string) ([]ssh.Key, error) {
-	url := combineURL(g.url, strings.Replace(sshKeysPath, "USERNAME", user, 1))
+	url := appendToURL(g.url, strings.Replace(githubKeysPath, "USERNAME", user, 1))
 
-	var jsonkeys []jsonKey
+	var jsonkeys []githubKeySSH
 
 	if err := g.doGet(url, &jsonkeys); err != nil {
 		return nil, err
@@ -92,7 +71,7 @@ func (g *githubClient) doGet(url string, i interface{}) error {
 	if err != nil {
 		return err
 	}
-	request.Header.Set("Accept", apiHeader)
+	request.Header.Set("Accept", githubAcceptHeaderValue)
 
 	response, err := g.client.Do(request)
 	if err != nil {
@@ -107,7 +86,7 @@ func (g *githubClient) doGet(url string, i interface{}) error {
 	return json.NewDecoder(response.Body).Decode(i)
 }
 
-func combineURL(url, path string) string {
+func appendToURL(url, path string) string {
 	trimmedURL := strings.TrimSuffix(url, "/")
 	trimmedPath := strings.TrimPrefix(path, "/")
 	return trimmedURL + "/" + trimmedPath

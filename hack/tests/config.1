@@ -1,14 +1,21 @@
 {
     "system": [
         {"user": "bobby", "authorized_keys_file": "/tmp/home/bobby/authorized_keys"},
-        {"user": "alice", "authorized_keys_file": "/tmp/home/alice/authorized_keys"}
+        {"user": "alice", "authorized_keys_file": "/tmp/home/alice/authorized_keys"},
+        {"user": "ned", "authorized_keys_file": "/tmp/home/ned/authorized_keys"}
     ],
-
     "github": {
         "url": "github.com",
         "accounts": [
             {"username": "alice", "system_user": "alice"},
             {"username": "bob", "system_user": "bobby"}
+        ]
+    },
+    "gitlab": {
+        "url": "gitlab.com",
+        "accounts": [
+            {"username": "alison", "system_user": "alice"},
+            {"username": "ned", "system_user": "ned"}
         ]
     }
 }

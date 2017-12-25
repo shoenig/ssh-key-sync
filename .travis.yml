@@ -4,8 +4,9 @@ go:
   - 1.x
 
 install:
-  - go get github.com/stretchr/testify/mock
+  - go get github.com/stretchr/testify
   - go get github.com/shoenig/toolkit
+  - go get github.com/pkg/errors
 
 script:
   - go build ./...
