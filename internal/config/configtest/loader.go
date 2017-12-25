@@ -14,14 +14,16 @@ type Loader struct {
 }
 
 // Load provides a mock function with given fields:
-func (mockerySelf *Loader) Load() (config.Options, error) {
+func (mockerySelf *Loader) Load() (*config.Options, error) {
 	ret := mockerySelf.Called()
 
-	var r0 config.Options
-	if rf, ok := ret.Get(0).(func() config.Options); ok {
+	var r0 *config.Options
+	if rf, ok := ret.Get(0).(func() *config.Options); ok {
 		r0 = rf()
 	} else {
-		r0 = ret.Get(0).(config.Options)
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(*config.Options)
+		}
 	}
 
 	var r1 error

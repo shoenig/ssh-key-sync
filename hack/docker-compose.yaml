@@ -1,0 +1,21 @@
+gitlab:
+  container_name: 'ssh-key-sync--gitlab'
+  image: 'gitlab/gitlab-ce:latest'
+  restart: no
+  hostname: 'gitlab.docker'
+  environment:
+    GITLAB_OMNIBUS_CONFIG: |
+      external_url 'http://localhost:8888'
+      gitlab_rails['gitlab_shell_ssh_port'] = 2224
+      postgresql['shared_buffers'] = "256MB"
+      prometheus_monitoring['enable'] = false
+      sidekiq['concurrency'] = 1
+      unicorn['worker_processes'] = 2
+  ports:
+    - '8888:8888'
+    - '2224:22'
+  volumes:
+    # volume path is specific to your local machine
+    - '/big/gitlab/config:/etc/gitlab'
+    - '/big/gitlab/logs:/var/log/gitlab'
+    - '/big/gitlab/data:/var/opt/gitlab'

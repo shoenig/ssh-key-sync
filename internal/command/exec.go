@@ -12,54 +12,58 @@ import (
 	"time"
 
 	"github.com/shoenig/ssh-key-sync/internal/config"
-	"github.com/shoenig/ssh-key-sync/internal/github"
+	"github.com/shoenig/ssh-key-sync/internal/netapi"
 	"github.com/shoenig/ssh-key-sync/internal/ssh"
 )
 
 type Execer interface {
-	Exec() error
+	Exec(*config.Options) error
 }
 
 func NewExecer(
-	loader config.Loader,
 	reader ssh.KeysReader,
-	client github.Client,
+	githubClient netapi.Client,
+	gitlabClient netapi.Client,
 ) Execer {
 	return &execer{
-		loader:    loader,
-		reader:    reader,
-		client:    client,
+		reader:       reader,
+		githubClient: githubClient,
+		gitlabClient: gitlabClient,
+
 		fakeChown: false,
 	}
 }
 
 type execer struct {
-	loader config.Loader
-	reader ssh.KeysReader
-	client github.Client
+	reader       ssh.KeysReader
+	githubClient netapi.Client
+	gitlabClient netapi.Client
 
 	// testing configuration only
 	fakeChown bool
 }
 
-func (e *execer) Exec() error {
-	opts, err := e.loader.Load()
-	if err != nil {
-		return fmt.Errorf("failed to load config: %v", err)
-	}
-
+func (e *execer) Exec(opts *config.Options) error {
 	users2keyfiles := opts.SystemUsers()
 	users2github := opts.GithubUsers()
+	users2gitlab := opts.GitlabUsers()
 
 	for username, keyfile := range users2keyfiles {
-		if err := e.processUser(username, keyfile, users2github); err != nil {
+		if err := e.processUser(username, keyfile, users2github, users2gitlab); err != nil {
 			return err
 		}
 	}
 
 	return nil
 }
-func (e *execer) processUser(user, keyfile string, users2github map[string]string) error {
+
+func (e *execer) processUser(
+	user,
+	keyfile string,
+	users2github,
+	users2gitlab map[string]string,
+) error {
+
 	// 1) ensure the authorized key file exists, and belongs to user
 	if err := e.touch(keyfile, user); err != nil {
 		return fmt.Errorf("failed to touch %q for user %q: %v", keyfile, user, err)
@@ -72,27 +76,34 @@ func (e *execer) processUser(user, keyfile string, users2github map[string]strin
 	}
 	fmt.Printf("loaded %d keys for user %q from %q\n", len(localKeys), user, keyfile)
 
-	// 3) load keys from github account
-	githubKeys, err := e.keysFromGithub(user, users2github)
+	// 3) maybe load keys from github account
+	githubKeys, err := e.getKeys(e.githubClient, user, users2github)
 	if err != nil {
 		return fmt.Errorf("failed to fetch keys from github for user %q: %v", user, err)
 	}
 	fmt.Printf("retrieved %d keys for user %q from github\n", len(githubKeys), user)
 
-	// 4) combine the keys, purging old managed keys with the new set
-	newKeys := combine(onlyUnmanaged(localKeys), githubKeys)
+	// 4) maybe load keys from gitlab account
+	gitlabKeys, err := e.getKeys(e.gitlabClient, user, users2gitlab)
+	if err != nil {
+		return fmt.Errorf("failed to fetch keys from gitlab for user %q: %v", user, err)
+	}
+	fmt.Printf("retrieved %d keys for user %q from gitlab\n", len(gitlabKeys), user)
+
+	// 5) combine the keys, purging old managed keys with the new set
+	newKeys := combine(onlyUnmanaged(localKeys), githubKeys, gitlabKeys)
 	content := generateFileContent(newKeys, time.Now())
 
-	// 5) write the new file content to the authorized keys file
+	// 6) write the new file content to the authorized keys file
 	return e.writeToFile(keyfile, user, content)
 }
 
-func (e *execer) keysFromGithub(user string, users2github map[string]string) ([]ssh.Key, error) {
-	githubUsername, exists := users2github[user]
+func (e *execer) getKeys(client netapi.Client, user string, system2account map[string]string) ([]ssh.Key, error) {
+	username, exists := system2account[user]
 	if !exists {
 		return nil, nil
 	}
-	return e.client.GetKeys(githubUsername)
+	return client.GetKeys(username)
 }
 
 func combine(keysets ...[]ssh.Key) []ssh.Key {
