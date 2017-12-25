@@ -2,7 +2,7 @@ ssh-key-sync
 ============
 
 `ssh-key-sync` is a tool written in Go for managing `authorized_key` files, by synchronizing
-the contents with public keys managed by accounts on https://github.com
+the contents with public keys managed by accounts on github or gitlab instances.
 
 [![Go Report Card](https://goreportcard.com/badge/github.com/shoenig/ssh-key-sync)](https://goreportcard.com/report/github.com/shoenig/ssh-key-sync) [![Build Status](https://travis-ci.org/shoenig/ssh-key-sync.svg?branch=master)](https://travis-ci.org/shoenig/ssh-key-sync) [![GoDoc](https://godoc.org/github.com/shoenig/ssh-key-sync?status.svg)](https://godoc.org/github.com/shoenig/ssh-key-sync) [![License](https://img.shields.io/github/license/shoenig/ssh-key-sync.svg?style=flat-square)](LICENSE)
 
@@ -18,22 +18,34 @@ that `ssh-key-sync` will read on startup.
 ### Configuration
 In the configuration file, specify a list of system user accounts and associated SSH authorized_keys
 files to manage. Also specify a set of github accounts, each with an associated github username and
-local system user. The public SSH keys will be pulled from that github account and unionized with the
-keys in the specified authorized_keys file for that user. Keys which have been removed from github are
-automatically removed from the authorized_keys file. Keys which were added independent of github are left
-untouched.
+local system user. The public SSH keys will be pulled from that github or gitlab account and unionized
+with the keys in the specified authorized_keys file for that user. Keys which have been removed from github
+or gitlab are automatically removed from the authorized_keys file. Keys which were added independent of
+github or gitlab are left untouched.
+
+Github SSH public keys are made available to the public. Gitlab SSH keys are accessible only from an
+administrative account, so a service user with an API token will be required.
 
 Use the following example as a template for creating a configuration file.
 ```
 {
     "system": [
         {"user": "clarkk", "authorized_keys_file": "/home/clarkk/.ssh/authorized_keys"},
+        {"user": "bob", "authorized_keys_file": "/home/bob/.ssh/authorized_keys"}
     ],
 
     "github": {
-        "url": "github.com",
+        "url": "api.github.com",
         "accounts": [
-            {"username": "superman", "system_user": "clarkk"},
+            {"username": "superman", "system_user": "clarkk"}
+        ]
+    },
+
+    "gitlab": {
+        "url": "internal.gitlab.net",
+        "token": "_jMr-KrDoy8GChTm998a",
+        "accounts": [
+            {"username":"billy", "system_user":"bob"}
         ]
     }
 }
@@ -71,7 +83,7 @@ WantedBy=timers.target
 
 ##### Enable the timer
 ```
-systemctl enable ssh-key-sync.timer
+$ systemctl enable ssh-key-sync.timer
 ```
 
 ### License
