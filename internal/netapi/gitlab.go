@@ -102,6 +102,7 @@ func (g *gitlabClient) doGet(url string, i interface{}) error {
 		return err
 	}
 	request.Header.Set(gitlabTokenHeaderKey, g.token)
+	request.Header.Set("User-Agent", useragent)
 
 	response, err := g.client.Do(request)
 	if err != nil {
