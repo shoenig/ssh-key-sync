@@ -1,21 +1,35 @@
 ssh-key-sync
 ============
 
-`ssh-key-sync` is a tool written in Go for managing `authorized_key` files, by synchronizing
+Command `ssh-key-sync` is a tool for managing `authorized_key` files, by synchronizing
 the contents with public keys managed by accounts on github or gitlab instances.
 
-[![Go Report Card](https://goreportcard.com/badge/github.com/shoenig/ssh-key-sync)](https://goreportcard.com/report/github.com/shoenig/ssh-key-sync) [![Build Status](https://travis-ci.org/shoenig/ssh-key-sync.svg?branch=master)](https://travis-ci.org/shoenig/ssh-key-sync) [![GoDoc](https://godoc.org/github.com/shoenig/ssh-key-sync?status.svg)](https://godoc.org/github.com/shoenig/ssh-key-sync) [![License](https://img.shields.io/github/license/shoenig/ssh-key-sync.svg?style=flat-square)](LICENSE)
+[![Go Report Card](https://goreportcard.com/badge/gophers.dev/cmds/ssh-key-sync)](https://goreportcard.com/report/gophers.dev/cmds/ssh-key-sync)
+[![Build Status](https://travis-ci.com/shoenig/ssh-key-sync.svg?branch=master)](https://travis-ci.com/shoenig/ssh-key-sync)
+[![GoDoc](https://godoc.org/gophers.dev/cmds/ssh-key-sync?status.svg)](https://godoc.org/gophers.dev/cmds/ssh-key-sync)
+[![NetflixOSS Lifecycle](https://img.shields.io/osslifecycle/shoenig/ssh-key-sync.svg)](OSSMETADATA)
+[![GitHub](https://img.shields.io/github/license/shoenig/ssh-key-sync.svg)](LICENSE)
 
-### Install
-Currently, `ssh-key-sync` must be compiled and installed manually. With a typical Go workspace,
-run `go get github.com/shoenig/ssh-key-sync` to produce a binary. Copy that binary to the destination
-server somewhere on `$PATH`.
+# Project Overview
 
-### Run
+Module `gophers.dev/cmds/ssh-key-sync` provides the command `ssh-key-sync`.
+
+# Getting Started
+
+The `ssh-key-sync` command can be installed by running
+```
+$ go get gophers.dev/cmds/ssh-key-sync
+```
+
+#### Example Usage
 There is only one argument, `--configfile` which specifies the location of the config file
 that `ssh-key-sync` will read on startup.
 
-### Configuration
+```golang
+ssh-key-sync --configfile /etc/ssh-key-sync.config
+```
+
+#### Configuration
 In the configuration file, specify a list of system user accounts and associated SSH authorized_keys
 files to manage. Also specify a set of github accounts, each with an associated github username and
 local system user. The public SSH keys will be pulled from that github or gitlab account and unionized
@@ -51,7 +65,7 @@ Use the following example as a template for creating a configuration file.
 }
 ```
 
-### Systemd Timer
+#### Systemd Timer
 A great way to keep authorized_key files updated is to run `ssh-key-sync` periodically
 via a systemd timer. To set this up, we will need two files - one service file which
 represents execution of `ssh-key-sync`, and a timer file which represents the schedule
@@ -86,5 +100,10 @@ WantedBy=timers.target
 $ systemctl enable ssh-key-sync.timer
 ```
 
-### License
+# Contributing
+
+The `gophers.dev/pkgs/regexplus` module is always improving with new features
+and error corrections. For contributing bug fixes and new features please file an issue.
+
+# License
 [MIT](https://raw.githubusercontent.com/shoenig/ssh-key-sync/master/LICENSE)

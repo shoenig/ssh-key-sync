@@ -1,6 +1,3 @@
-// Author hoenig
-// License MIT
-
 package config
 
 import (
@@ -10,7 +7,7 @@ import (
 	"github.com/shoenig/ssh-key-sync/internal/netapi"
 )
 
-//go:generate mockery -interface=Loader -package=configtest
+//go:generate go run github.com/gojuno/minimock/cmd/minimock -g -i Loader -s _mock.go
 
 type Loader interface {
 	Load() (*Options, error)

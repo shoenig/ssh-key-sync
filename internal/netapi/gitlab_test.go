@@ -1,5 +1,3 @@
-// Author hoenig
-
 package netapi
 
 import (
@@ -45,9 +43,9 @@ func Test_GitlabClient_GetKeys(t *testing.T) {
 	opts, ts := makeServer(func(w http.ResponseWriter, r *http.Request) {
 		switch r.URL.Path {
 		case "/api/v4/users":
-			w.Write([]byte(gitlabUsersResponse))
+			_, _ = w.Write([]byte(gitlabUsersResponse))
 		case "/api/v4/users/9422/keys":
-			w.Write([]byte(gitlabKeysResponse))
+			_, _ = w.Write([]byte(gitlabKeysResponse))
 		default:
 			t.Fatal("unexpected path", r.URL.Path)
 		}

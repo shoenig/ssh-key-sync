@@ -1,6 +1,3 @@
-// Author hoenig
-// License MIT
-
 package command
 
 import (
@@ -9,9 +6,9 @@ import (
 	"testing"
 
 	"github.com/shoenig/ssh-key-sync/internal/config"
-	"github.com/shoenig/ssh-key-sync/internal/netapi/netapitest"
+	"github.com/shoenig/ssh-key-sync/internal/netapi"
 	"github.com/shoenig/ssh-key-sync/internal/ssh"
-	"github.com/shoenig/ssh-key-sync/internal/ssh/sshtest"
+
 	"github.com/stretchr/testify/require"
 )
 
@@ -30,9 +27,13 @@ func Test_Exec(t *testing.T) {
 	mkdirs(t, keySally)
 	mkdirs(t, keyNed)
 
-	githubClient := &netapitest.Client{}
-	gitlabClient := &netapitest.Client{}
-	reader := &sshtest.KeysReader{}
+	githubClient := netapi.NewClientMock(t)
+	gitlabClient := netapi.NewClientMock(t)
+	reader := ssh.NewKeysReaderMock(t)
+
+	defer githubClient.MinimockFinish()
+	defer gitlabClient.MinimockFinish()
+	defer reader.MinimockFinish()
 
 	opts := &config.Options{
 		System: []config.User{
@@ -67,41 +68,17 @@ func Test_Exec(t *testing.T) {
 	sally3 := ssh.Key{Managed: true, Value: "lllllll", User: "sally", Host: "s3"}
 	ned1 := ssh.Key{Managed: true, Value: "ppppppp", User: "ned", Host: "n1"}
 
-	reader.On("ReadKeys", keyBob).Return(
-		[]ssh.Key{bob1, bob2}, nil,
-	).Once()
-
-	reader.On("ReadKeys", keySally).Return(
-		[]ssh.Key{sally1, sally2}, nil,
-	).Once()
-
-	reader.On("ReadKeys", keyNed).Return(
-		[]ssh.Key{}, nil,
-	).Once()
-
-	githubClient.On("GetKeys", "billybob").Return(
-		[]ssh.Key{bob3, bob4}, nil,
-	).Once()
-
-	githubClient.On("GetKeys", "sadsally").Return(
-		[]ssh.Key{sally3}, nil,
-	).Once()
-
-	gitlabClient.On("GetKeys", "bobbo").Return(
-		[]ssh.Key{bob5}, nil,
-	).Once()
-
-	gitlabClient.On("GetKeys", "ned").Return(
-		[]ssh.Key{ned1}, nil,
-	)
+	reader.ReadKeysMock.When(keyBob).Then([]ssh.Key{bob1, bob2}, nil)
+	reader.ReadKeysMock.When(keySally).Then([]ssh.Key{sally1, sally2}, nil)
+	reader.ReadKeysMock.When(keyNed).Then([]ssh.Key{}, nil)
+	githubClient.GetKeysMock.When("billybob").Then([]ssh.Key{bob3, bob4}, nil)
+	githubClient.GetKeysMock.When("sadsally").Then([]ssh.Key{sally3}, nil)
+	gitlabClient.GetKeysMock.When("bobbo").Then([]ssh.Key{bob5}, nil)
+	gitlabClient.GetKeysMock.When("ned").Then([]ssh.Key{ned1}, nil)
 
 	ex := NewExecer(reader, githubClient, gitlabClient)
 	ex.(*execer).fakeChown = true
 
 	err := ex.Exec(opts)
 	require.NoError(t, err)
-
-	reader.AssertExpectations(t)
-	githubClient.AssertExpectations(t)
-	gitlabClient.AssertExpectations(t)
 }

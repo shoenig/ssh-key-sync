@@ -1,6 +1,3 @@
-// Author hoenig
-// License MIT
-
 package netapi
 
 import (
@@ -11,7 +8,8 @@ import (
 	"strings"
 
 	"github.com/shoenig/ssh-key-sync/internal/ssh"
-	"github.com/shoenig/toolkit"
+
+	"gophers.dev/pkgs/ignore"
 )
 
 const (
@@ -78,7 +76,7 @@ func (g *githubClient) doGet(url string, i interface{}) error {
 	if err != nil {
 		return err
 	}
-	defer toolkit.Drain(response.Body)
+	defer ignore.Drain(response.Body)
 
 	if response.StatusCode >= 400 {
 		return fmt.Errorf("request to %q returned code %d", url, response.StatusCode)

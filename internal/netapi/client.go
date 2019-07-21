@@ -1,6 +1,3 @@
-// Author hoenig
-// License MIT
-
 package netapi
 
 import (
@@ -13,7 +10,7 @@ import (
 	"github.com/shoenig/ssh-key-sync/internal/ssh"
 )
 
-//go:generate mockery -interface=Client -package netapitest
+//go:generate go run github.com/gojuno/minimock/cmd/minimock -g -i Client -s _mock.go
 
 // A Client is used to acquire keys from an API service like
 // github/gitlab (public or internal).

@@ -1,6 +1,3 @@
-// Author hoenig
-// License MIT
-
 package ssh
 
 import (
@@ -11,7 +8,7 @@ import (
 	"strings"
 )
 
-//go:generate mockery -interface=KeysReader -package sshtest
+//go:generate go run github.com/gojuno/minimock/cmd/minimock -g -i KeysReader -s _mock.go
 
 type KeysReader interface {
 	ReadKeys(filename string) ([]Key, error)

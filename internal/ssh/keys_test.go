@@ -1,6 +1,3 @@
-// Author hoenig
-// License MIT
-
 package ssh
 
 import (

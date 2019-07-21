@@ -1,6 +1,3 @@
-// Author hoenig
-// License MIT
-
 package command
 
 import (
@@ -11,6 +8,7 @@ import (
 	"time"
 
 	"github.com/shoenig/ssh-key-sync/internal/ssh"
+
 	"github.com/stretchr/testify/require"
 )
 

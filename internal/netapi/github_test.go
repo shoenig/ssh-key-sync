@@ -1,6 +1,3 @@
-// Author hoenig
-// License MIT
-
 package netapi
 
 import (
@@ -35,7 +32,7 @@ func Test_GithubClient_GetKeys(t *testing.T) {
 		if !strings.HasSuffix(r.URL.Path, "/users/bobby/keys") {
 			t.Fatal("unexpected path", r.URL.Path)
 		}
-		w.Write([]byte(githubKeysResponse))
+		_, _ = w.Write([]byte(githubKeysResponse))
 	})
 	defer ts.Close()
 
