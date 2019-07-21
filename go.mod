@@ -1,4 +1,4 @@
-module github.com/shoenig/ssh-key-sync
+module gophers.dev/cmds/ssh-key-sync
 
 require (
 	github.com/gojuno/minimock v2.1.7+incompatible
