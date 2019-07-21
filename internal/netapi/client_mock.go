@@ -8,7 +8,7 @@ import (
 	mm_time "time"
 
 	"github.com/gojuno/minimock"
-	"github.com/shoenig/ssh-key-sync/internal/ssh"
+	"gophers.dev/cmds/ssh-key-sync/internal/ssh"
 )
 
 // ClientMock implements Client

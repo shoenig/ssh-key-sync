@@ -1,16 +1,13 @@
-// Author hoenig
-// License MIT
-
 package main
 
 import (
 	"fmt"
 	"os"
 
-	"github.com/shoenig/ssh-key-sync/internal/command"
-	"github.com/shoenig/ssh-key-sync/internal/config"
-	"github.com/shoenig/ssh-key-sync/internal/netapi"
-	"github.com/shoenig/ssh-key-sync/internal/ssh"
+	"gophers.dev/cmds/ssh-key-sync/internal/command"
+	"gophers.dev/cmds/ssh-key-sync/internal/config"
+	"gophers.dev/cmds/ssh-key-sync/internal/netapi"
+	"gophers.dev/cmds/ssh-key-sync/internal/ssh"
 )
 
 func main() {

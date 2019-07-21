@@ -7,7 +7,7 @@ import (
 	"sort"
 	"strings"
 
-	"github.com/shoenig/ssh-key-sync/internal/ssh"
+	"gophers.dev/cmds/ssh-key-sync/internal/ssh"
 
 	"gophers.dev/pkgs/ignore"
 )

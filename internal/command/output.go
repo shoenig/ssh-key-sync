@@ -8,7 +8,7 @@ import (
 	"strings"
 	"time"
 
-	"github.com/shoenig/ssh-key-sync/internal/ssh"
+	"gophers.dev/cmds/ssh-key-sync/internal/ssh"
 )
 
 func generateFileContent(keys []ssh.Key, now time.Time) string {
