@@ -10,7 +10,7 @@ import (
 	"gophers.dev/cmds/ssh-key-sync/internal/ssh"
 )
 
-//go:generate go run github.com/gojuno/minimock/cmd/minimock -g -i Client -s _mock.go
+//go:generate go run github.com/gojuno/minimock/v3/cmd/minimock -g -i Client -s _mock.go
 
 // A Client is used to acquire keys from an API service like
 // github/gitlab (public or internal).

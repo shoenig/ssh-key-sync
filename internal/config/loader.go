@@ -7,7 +7,7 @@ import (
 	"gophers.dev/cmds/ssh-key-sync/internal/netapi"
 )
 
-//go:generate go run github.com/gojuno/minimock/cmd/minimock -g -i Loader -s _mock.go
+//go:generate go run github.com/gojuno/minimock/v3/cmd/minimock -g -i Loader -s _mock.go
 
 type Loader interface {
 	Load() (*Options, error)

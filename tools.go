@@ -2,4 +2,4 @@
 
 package main
 
-import _ "github.com/gojuno/minimock"
+import _ "github.com/gojuno/minimock/v3"

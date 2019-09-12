@@ -6,7 +6,7 @@ import (
 	mm_atomic "sync/atomic"
 	mm_time "time"
 
-	"github.com/gojuno/minimock"
+	"github.com/gojuno/minimock/v3"
 )
 
 // LoaderMock implements Loader
@@ -14,6 +14,7 @@ type LoaderMock struct {
 	t minimock.Tester
 
 	funcLoad          func() (op1 *Options, err error)
+	inspectFuncLoad   func()
 	afterLoadCounter  uint64
 	beforeLoadCounter uint64
 	LoadMock          mLoaderMockLoad
@@ -64,6 +65,17 @@ func (mmLoad *mLoaderMockLoad) Expect() *mLoaderMockLoad {
 	return mmLoad
 }
 
+// Inspect accepts an inspector function that has same arguments as the Loader.Load
+func (mmLoad *mLoaderMockLoad) Inspect(f func()) *mLoaderMockLoad {
+	if mmLoad.mock.inspectFuncLoad != nil {
+		mmLoad.mock.t.Fatalf("Inspect function is already set for LoaderMock.Load")
+	}
+
+	mmLoad.mock.inspectFuncLoad = f
+
+	return mmLoad
+}
+
 // Return sets up results that will be returned by Loader.Load
 func (mmLoad *mLoaderMockLoad) Return(op1 *Options, err error) *LoaderMock {
 	if mmLoad.mock.funcLoad != nil {
@@ -96,14 +108,18 @@ func (mmLoad *LoaderMock) Load() (op1 *Options, err error) {
 	mm_atomic.AddUint64(&mmLoad.beforeLoadCounter, 1)
 	defer mm_atomic.AddUint64(&mmLoad.afterLoadCounter, 1)
 
+	if mmLoad.inspectFuncLoad != nil {
+		mmLoad.inspectFuncLoad()
+	}
+
 	if mmLoad.LoadMock.defaultExpectation != nil {
 		mm_atomic.AddUint64(&mmLoad.LoadMock.defaultExpectation.Counter, 1)
 
-		results := mmLoad.LoadMock.defaultExpectation.results
-		if results == nil {
+		mm_results := mmLoad.LoadMock.defaultExpectation.results
+		if mm_results == nil {
 			mmLoad.t.Fatal("No results are set for the LoaderMock.Load")
 		}
-		return (*results).op1, (*results).err
+		return (*mm_results).op1, (*mm_results).err
 	}
 	if mmLoad.funcLoad != nil {
 		return mmLoad.funcLoad()
