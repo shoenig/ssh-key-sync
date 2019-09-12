@@ -7,7 +7,7 @@ import (
 	mm_atomic "sync/atomic"
 	mm_time "time"
 
-	"github.com/gojuno/minimock"
+	"github.com/gojuno/minimock/v3"
 	"gophers.dev/cmds/ssh-key-sync/internal/ssh"
 )
 
@@ -16,6 +16,7 @@ type ClientMock struct {
 	t minimock.Tester
 
 	funcGetKeys          func(user string) (ka1 []ssh.Key, err error)
+	inspectFuncGetKeys   func(user string)
 	afterGetKeysCounter  uint64
 	beforeGetKeysCounter uint64
 	GetKeysMock          mClientMockGetKeys
@@ -82,6 +83,17 @@ func (mmGetKeys *mClientMockGetKeys) Expect(user string) *mClientMockGetKeys {
 	return mmGetKeys
 }
 
+// Inspect accepts an inspector function that has same arguments as the Client.GetKeys
+func (mmGetKeys *mClientMockGetKeys) Inspect(f func(user string)) *mClientMockGetKeys {
+	if mmGetKeys.mock.inspectFuncGetKeys != nil {
+		mmGetKeys.mock.t.Fatalf("Inspect function is already set for ClientMock.GetKeys")
+	}
+
+	mmGetKeys.mock.inspectFuncGetKeys = f
+
+	return mmGetKeys
+}
+
 // Return sets up results that will be returned by Client.GetKeys
 func (mmGetKeys *mClientMockGetKeys) Return(ka1 []ssh.Key, err error) *ClientMock {
 	if mmGetKeys.mock.funcGetKeys != nil {
@@ -135,15 +147,19 @@ func (mmGetKeys *ClientMock) GetKeys(user string) (ka1 []ssh.Key, err error) {
 	mm_atomic.AddUint64(&mmGetKeys.beforeGetKeysCounter, 1)
 	defer mm_atomic.AddUint64(&mmGetKeys.afterGetKeysCounter, 1)
 
-	params := &ClientMockGetKeysParams{user}
+	if mmGetKeys.inspectFuncGetKeys != nil {
+		mmGetKeys.inspectFuncGetKeys(user)
+	}
+
+	mm_params := &ClientMockGetKeysParams{user}
 
 	// Record call args
 	mmGetKeys.GetKeysMock.mutex.Lock()
-	mmGetKeys.GetKeysMock.callArgs = append(mmGetKeys.GetKeysMock.callArgs, params)
+	mmGetKeys.GetKeysMock.callArgs = append(mmGetKeys.GetKeysMock.callArgs, mm_params)
 	mmGetKeys.GetKeysMock.mutex.Unlock()
 
 	for _, e := range mmGetKeys.GetKeysMock.expectations {
-		if minimock.Equal(e.params, params) {
+		if minimock.Equal(e.params, mm_params) {
 			mm_atomic.AddUint64(&e.Counter, 1)
 			return e.results.ka1, e.results.err
 		}
@@ -151,17 +167,17 @@ func (mmGetKeys *ClientMock) GetKeys(user string) (ka1 []ssh.Key, err error) {
 
 	if mmGetKeys.GetKeysMock.defaultExpectation != nil {
 		mm_atomic.AddUint64(&mmGetKeys.GetKeysMock.defaultExpectation.Counter, 1)
-		want := mmGetKeys.GetKeysMock.defaultExpectation.params
-		got := ClientMockGetKeysParams{user}
-		if want != nil && !minimock.Equal(*want, got) {
-			mmGetKeys.t.Errorf("ClientMock.GetKeys got unexpected parameters, want: %#v, got: %#v%s\n", *want, got, minimock.Diff(*want, got))
+		mm_want := mmGetKeys.GetKeysMock.defaultExpectation.params
+		mm_got := ClientMockGetKeysParams{user}
+		if mm_want != nil && !minimock.Equal(*mm_want, mm_got) {
+			mmGetKeys.t.Errorf("ClientMock.GetKeys got unexpected parameters, want: %#v, got: %#v%s\n", *mm_want, mm_got, minimock.Diff(*mm_want, mm_got))
 		}
 
-		results := mmGetKeys.GetKeysMock.defaultExpectation.results
-		if results == nil {
+		mm_results := mmGetKeys.GetKeysMock.defaultExpectation.results
+		if mm_results == nil {
 			mmGetKeys.t.Fatal("No results are set for the ClientMock.GetKeys")
 		}
-		return (*results).ka1, (*results).err
+		return (*mm_results).ka1, (*mm_results).err
 	}
 	if mmGetKeys.funcGetKeys != nil {
 		return mmGetKeys.funcGetKeys(user)

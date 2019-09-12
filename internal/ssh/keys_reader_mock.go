@@ -7,7 +7,7 @@ import (
 	mm_atomic "sync/atomic"
 	mm_time "time"
 
-	"github.com/gojuno/minimock"
+	"github.com/gojuno/minimock/v3"
 )
 
 // KeysReaderMock implements KeysReader
@@ -15,6 +15,7 @@ type KeysReaderMock struct {
 	t minimock.Tester
 
 	funcReadKeys          func(filename string) (ka1 []Key, err error)
+	inspectFuncReadKeys   func(filename string)
 	afterReadKeysCounter  uint64
 	beforeReadKeysCounter uint64
 	ReadKeysMock          mKeysReaderMockReadKeys
@@ -81,6 +82,17 @@ func (mmReadKeys *mKeysReaderMockReadKeys) Expect(filename string) *mKeysReaderM
 	return mmReadKeys
 }
 
+// Inspect accepts an inspector function that has same arguments as the KeysReader.ReadKeys
+func (mmReadKeys *mKeysReaderMockReadKeys) Inspect(f func(filename string)) *mKeysReaderMockReadKeys {
+	if mmReadKeys.mock.inspectFuncReadKeys != nil {
+		mmReadKeys.mock.t.Fatalf("Inspect function is already set for KeysReaderMock.ReadKeys")
+	}
+
+	mmReadKeys.mock.inspectFuncReadKeys = f
+
+	return mmReadKeys
+}
+
 // Return sets up results that will be returned by KeysReader.ReadKeys
 func (mmReadKeys *mKeysReaderMockReadKeys) Return(ka1 []Key, err error) *KeysReaderMock {
 	if mmReadKeys.mock.funcReadKeys != nil {
@@ -134,15 +146,19 @@ func (mmReadKeys *KeysReaderMock) ReadKeys(filename string) (ka1 []Key, err erro
 	mm_atomic.AddUint64(&mmReadKeys.beforeReadKeysCounter, 1)
 	defer mm_atomic.AddUint64(&mmReadKeys.afterReadKeysCounter, 1)
 
-	params := &KeysReaderMockReadKeysParams{filename}
+	if mmReadKeys.inspectFuncReadKeys != nil {
+		mmReadKeys.inspectFuncReadKeys(filename)
+	}
+
+	mm_params := &KeysReaderMockReadKeysParams{filename}
 
 	// Record call args
 	mmReadKeys.ReadKeysMock.mutex.Lock()
-	mmReadKeys.ReadKeysMock.callArgs = append(mmReadKeys.ReadKeysMock.callArgs, params)
+	mmReadKeys.ReadKeysMock.callArgs = append(mmReadKeys.ReadKeysMock.callArgs, mm_params)
 	mmReadKeys.ReadKeysMock.mutex.Unlock()
 
 	for _, e := range mmReadKeys.ReadKeysMock.expectations {
-		if minimock.Equal(e.params, params) {
+		if minimock.Equal(e.params, mm_params) {
 			mm_atomic.AddUint64(&e.Counter, 1)
 			return e.results.ka1, e.results.err
 		}
@@ -150,17 +166,17 @@ func (mmReadKeys *KeysReaderMock) ReadKeys(filename string) (ka1 []Key, err erro
 
 	if mmReadKeys.ReadKeysMock.defaultExpectation != nil {
 		mm_atomic.AddUint64(&mmReadKeys.ReadKeysMock.defaultExpectation.Counter, 1)
-		want := mmReadKeys.ReadKeysMock.defaultExpectation.params
-		got := KeysReaderMockReadKeysParams{filename}
-		if want != nil && !minimock.Equal(*want, got) {
-			mmReadKeys.t.Errorf("KeysReaderMock.ReadKeys got unexpected parameters, want: %#v, got: %#v%s\n", *want, got, minimock.Diff(*want, got))
+		mm_want := mmReadKeys.ReadKeysMock.defaultExpectation.params
+		mm_got := KeysReaderMockReadKeysParams{filename}
+		if mm_want != nil && !minimock.Equal(*mm_want, mm_got) {
+			mmReadKeys.t.Errorf("KeysReaderMock.ReadKeys got unexpected parameters, want: %#v, got: %#v%s\n", *mm_want, mm_got, minimock.Diff(*mm_want, mm_got))
 		}
 
-		results := mmReadKeys.ReadKeysMock.defaultExpectation.results
-		if results == nil {
+		mm_results := mmReadKeys.ReadKeysMock.defaultExpectation.results
+		if mm_results == nil {
 			mmReadKeys.t.Fatal("No results are set for the KeysReaderMock.ReadKeys")
 		}
-		return (*results).ka1, (*results).err
+		return (*mm_results).ka1, (*mm_results).err
 	}
 	if mmReadKeys.funcReadKeys != nil {
 		return mmReadKeys.funcReadKeys(filename)
