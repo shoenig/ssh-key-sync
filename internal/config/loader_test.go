@@ -18,7 +18,7 @@ func Test_Loader(t *testing.T) {
 			{User: "ned", AuthorizedKeysFile: "/tmp/home/ned/authorized_keys"},
 		},
 		Github: Github{
-			URL: "github.com",
+			URL: "api.github.com",
 			Accounts: []WebAccount{
 				{Username: "alice", SystemUser: "alice"},
 				{Username: "bob", SystemUser: "bobby"},
