@@ -55,6 +55,8 @@ golang.org/x/sys v0.0.0-20190215142949-d0b11bdaac8a/go.mod h1:STP8DvDyc/dI5b8T5h
 golang.org/x/text v0.3.0/go.mod h1:NqM8EUOU14njkJ3fqMW+pc6Ldnwhi/IjpwHt7yyuwOQ=
 golang.org/x/tools v0.0.0-20190614205625-5aca471b1d59 h1:QjA/9ArTfVTLfEhClDCG7SGrZkZixxWpwNCDiwJfh88=
 golang.org/x/tools v0.0.0-20190614205625-5aca471b1d59/go.mod h1:/rFqwRUd4F7ZHNgwSSTFct+R/Kf4OFW1sUzUTQQTgfc=
+gophers.dev/pkgs/atomicfs v0.3.2 h1:m8pg/oDLDx7IFwWt0H4N27FZztvqRYwtl15hnxaCQuU=
+gophers.dev/pkgs/atomicfs v0.3.2/go.mod h1:pezRNuiPcB7C0UhqaiIBB0d7J9zSdZTJk6QTGZ1Xauo=
 gophers.dev/pkgs/ignore v0.2.0 h1:JH2NgFni0vbB09fO7aFmgQnZUyRzk1Us5Bu56K4jPp8=
 gophers.dev/pkgs/ignore v0.2.0/go.mod h1:HwTn4Fc9oicp2TxFV/8P0CswwfsVQczZvG6ZTy2TRXA=
 gopkg.in/alecthomas/kingpin.v2 v2.2.6/go.mod h1:FMv+mEhP44yOT+4EoQTLFTRgOQ1FBLkstjWtayDeSgw=

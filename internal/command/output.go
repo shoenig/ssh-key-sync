@@ -2,13 +2,12 @@ package command
 
 import (
 	"bytes"
-	"io"
-	"io/ioutil"
-	"os"
+	"path/filepath"
 	"strings"
 	"time"
 
 	"gophers.dev/cmds/ssh-key-sync/internal/ssh"
+	"gophers.dev/pkgs/atomicfs"
 )
 
 func generateFileContent(keys []ssh.Key, now time.Time) string {
@@ -35,33 +34,17 @@ func generateFileContent(keys []ssh.Key, now time.Time) string {
 }
 
 // safely write to a tmp file and then do an atomic rename
+
 func (e *execer) writeToFile(file, user, content string) error {
-	f, err := ioutil.TempFile("", "ssh-key-sync-")
-	if err != nil {
+	fw := atomicfs.NewFileWriter(atomicfs.Options{
+		TmpDirectory: filepath.Dir(file),
+		TmpExtension: "tmp",
+		Mode:         0660,
+	})
+
+	if err := fw.Write(strings.NewReader(content), file); err != nil {
 		return err
 	}
 
-	reader := strings.NewReader(content)
-
-	if _, err := io.Copy(f, reader); err != nil {
-		return err
-	}
-
-	// flush the tmpfile complettely to disk
-	if err := f.Sync(); err != nil {
-		return err
-	}
-
-	// close the tmpfile
-	if err := f.Close(); err != nil {
-		return err
-	}
-
-	// chown the file to user
-	if err := e.touch(f.Name(), user); err != nil {
-		return err
-	}
-
-	// atmoically rename the file
-	return os.Rename(f.Name(), file)
+	return e.touch(file, user)
 }
