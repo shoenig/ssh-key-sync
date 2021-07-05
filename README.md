@@ -18,7 +18,7 @@ Module `gophers.dev/cmds/ssh-key-sync` provides the command `ssh-key-sync`.
 
 The `ssh-key-sync` command can be installed by running
 ```
-$ go get gophers.dev/cmds/ssh-key-sync
+$ go install gophers.dev/cmds/ssh-key-sync@latest
 ```
 
 #### Example Usage
