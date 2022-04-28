@@ -5,8 +5,7 @@ import (
 	"path/filepath"
 	"testing"
 
-	"github.com/stretchr/testify/require"
-
+	"github.com/shoenig/test/must"
 	"gophers.dev/cmds/ssh-key-sync/internal/config"
 	"gophers.dev/cmds/ssh-key-sync/internal/netapi"
 	"gophers.dev/cmds/ssh-key-sync/internal/ssh"
@@ -15,7 +14,7 @@ import (
 func mkdirs(t *testing.T, fp string) {
 	dirs := filepath.Dir(fp)
 	err := os.MkdirAll(dirs, 0700)
-	require.NoError(t, err)
+	must.NoError(t, err)
 }
 
 func Test_Exec(t *testing.T) {
@@ -80,5 +79,5 @@ func Test_Exec(t *testing.T) {
 	ex.(*execer).fakeChown = true
 
 	err := ex.Exec(opts)
-	require.NoError(t, err)
+	must.NoError(t, err)
 }

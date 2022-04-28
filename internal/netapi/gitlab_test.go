@@ -4,7 +4,7 @@ import (
 	"net/http"
 	"testing"
 
-	"github.com/stretchr/testify/require"
+	"github.com/shoenig/test/must"
 )
 
 const (
@@ -50,14 +50,13 @@ func Test_GitlabClient_GetKeys(t *testing.T) {
 			t.Fatal("unexpected path", r.URL.Path)
 		}
 	})
-	defer ts.Close()
+	t.Cleanup(ts.Close)
 
 	client := NewGitlabClient(opts)
 	keys, err := client.GetKeys("alice")
-	require.NoError(t, err)
-
-	require.Equal(t, 3, len(keys))
-	require.Equal(t, "ssh-rsa AAAAB3Nzaeyij", keys[2].Value)
-	require.Equal(t, "ssh-rsa AAAAB3NzaZ1yk=", keys[1].Value)
-	require.Equal(t, "ssh-rsa AAAAB3NzaC1yc2E", keys[0].Value)
+	must.NoError(t, err)
+	must.LenSlice(t, 3, keys)
+	must.EqCmp(t, "ssh-rsa AAAAB3Nzaeyij", keys[2].Value)
+	must.EqCmp(t, "ssh-rsa AAAAB3NzaZ1yk=", keys[1].Value)
+	must.EqCmp(t, "ssh-rsa AAAAB3NzaC1yc2E", keys[0].Value)
 }

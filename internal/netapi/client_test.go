@@ -5,7 +5,7 @@ import (
 	"net/http/httptest"
 	"testing"
 
-	"github.com/stretchr/testify/require"
+	"github.com/shoenig/test/must"
 )
 
 type optioner struct {
@@ -29,11 +29,11 @@ func Test_Options_url(t *testing.T) {
 	o := &Options{
 		URL: "",
 	}
-	require.Equal(t, o.url("code.net"), "https://code.net")
-	require.Equal(t, o.url("http://code.net"), "http://code.net")
+	must.EqCmp(t, "https://code.net", o.url("code.net"))
+	must.EqCmp(t, "http://code.net", o.url("http://code.net"))
 
 	o = &Options{
 		URL: "api.gitlab.net",
 	}
-	require.Equal(t, o.url("code.net"), "https://api.gitlab.net")
+	must.EqCmp(t, "https://api.gitlab.net", o.url("code.net"))
 }
