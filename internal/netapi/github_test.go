@@ -5,7 +5,7 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/stretchr/testify/require"
+	"github.com/shoenig/test/must"
 )
 
 const (
@@ -29,21 +29,21 @@ const (
 
 func Test_GithubClient_GetKeys(t *testing.T) {
 	opts, ts := makeServer(func(w http.ResponseWriter, r *http.Request) {
-		if !strings.HasSuffix(r.URL.Path, "/users/bobby/keys") {
-			t.Fatal("unexpected path", r.URL.Path)
-		}
+		suffix := strings.HasSuffix(r.URL.Path, "/users/bobby/keys")
+		must.True(t, suffix)
+
 		_, _ = w.Write([]byte(githubKeysResponse))
 	})
-	defer ts.Close()
+	t.Cleanup(ts.Close)
 
 	client := NewGithubClient(opts)
 
 	keys, err := client.GetKeys("bobby")
-	require.NoError(t, err)
+	must.NoError(t, err)
 
 	// sorted by ascii
-	require.Equal(t, 3, len(keys))
-	require.Equal(t, "ssh-rsa AAAAB3Nzaeyij", keys[2].Value)
-	require.Equal(t, "ssh-rsa AAAAB3NzaZ1yk=", keys[1].Value)
-	require.Equal(t, "ssh-rsa AAAAB3NzaC1yc2E", keys[0].Value)
+	must.LenSlice(t, 3, keys)
+	must.EqCmp(t, "ssh-rsa AAAAB3Nzaeyij", keys[2].Value)
+	must.EqCmp(t, "ssh-rsa AAAAB3NzaZ1yk=", keys[1].Value)
+	must.EqCmp(t, "ssh-rsa AAAAB3NzaC1yc2E", keys[0].Value)
 }

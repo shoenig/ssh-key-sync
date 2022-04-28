@@ -1,15 +1,16 @@
 package ssh
 
-import "testing"
+import (
+	"testing"
 
-func compareToFile(filename string, expected []Key) error {
+	"github.com/shoenig/test/must"
+)
+
+func compareToFile(t *testing.T, filename string, expected []Key) {
 	reader := NewKeysReader()
 	keys, err := reader.ReadKeys(filename)
-	if err != nil {
-		return err
-	}
-
-	return compareKeys(expected, keys)
+	must.NoError(t, err)
+	must.Eq(t, expected, keys)
 }
 
 func Test_read_1(t *testing.T) {
@@ -22,9 +23,7 @@ func Test_read_1(t *testing.T) {
 		),
 	}
 
-	if err := compareToFile("../../hack/tests/authorized_keys.1", expected); err != nil {
-		t.Fatal(err)
-	}
+	compareToFile(t, "../../hack/tests/authorized_keys.1", expected)
 }
 
 func Test_read_2(t *testing.T) {
@@ -67,7 +66,5 @@ func Test_read_2(t *testing.T) {
 		),
 	}
 
-	if err := compareToFile("../../hack/tests/authorized_keys.2", expected); err != nil {
-		t.Fatal(err)
-	}
+	compareToFile(t, "../../hack/tests/authorized_keys.2", expected)
 }

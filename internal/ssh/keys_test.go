@@ -1,9 +1,10 @@
 package ssh
 
 import (
-	"fmt"
 	"sort"
 	"testing"
+
+	"github.com/shoenig/test/must"
 )
 
 func key(managed bool, user, host, value string) Key {
@@ -13,21 +14,6 @@ func key(managed bool, user, host, value string) Key {
 		Host:    host,
 		Value:   value,
 	}
-}
-
-func compareKeys(a, b []Key) error {
-	if len(a) != len(b) {
-		return fmt.Errorf("len a != b (%d != %d)", len(a), len(b))
-	}
-
-	for i := range a {
-		keyA := a[i]
-		keyB := b[i]
-		if keyA != keyB {
-			return fmt.Errorf("keys at %d do not match, a: %s, b: %s", i, keyA, keyB)
-		}
-	}
-	return nil
 }
 
 func Test_Key_String_full(t *testing.T) {
@@ -40,9 +26,7 @@ func Test_Key_String_full(t *testing.T) {
 
 	expected := "[managed:true user:bob host:host1 value:abc123]"
 	s := k.String()
-	if s != expected {
-		t.Fatalf("key string is not as expected, s: %s, expected: %s", s, expected)
-	}
+	must.EqCmp(t, expected, s)
 }
 
 func Test_Key_String_empty(t *testing.T) {
@@ -53,9 +37,7 @@ func Test_Key_String_empty(t *testing.T) {
 
 	expected := "[managed:false user: host: value:abc123]"
 	s := k.String()
-	if s != expected {
-		t.Fatalf("key string is not as expected, s: %s, expected: %s", s, expected)
-	}
+	must.EqCmp(t, expected, s)
 }
 
 func Test_sortByMetadata(t *testing.T) {
@@ -88,7 +70,5 @@ func Test_sortByMetadata(t *testing.T) {
 		key(true, "ned", "h5", "zzzzz"),
 	}
 
-	if err := compareKeys(expected, keys); err != nil {
-		t.Fatal(err)
-	}
+	must.Eq(t, expected, keys)
 }

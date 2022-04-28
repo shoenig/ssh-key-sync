@@ -3,13 +3,13 @@ package config
 import (
 	"testing"
 
-	"github.com/stretchr/testify/require"
+	"github.com/shoenig/test/must"
 )
 
 func Test_Loader(t *testing.T) {
 	l := NewLoader("../../hack/tests/config.1")
 	opts, err := l.Load()
-	require.NoError(t, err)
+	must.NoError(t, err)
 
 	expOpts := &Options{
 		System: []User{
@@ -32,36 +32,36 @@ func Test_Loader(t *testing.T) {
 			},
 		},
 	}
-	require.Equal(t, expOpts, opts)
+	must.Eq(t, expOpts, opts)
 
 	expSystemUsers := map[string]string{
 		"bobby": "/tmp/home/bobby/authorized_keys",
 		"alice": "/tmp/home/alice/authorized_keys",
 		"ned":   "/tmp/home/ned/authorized_keys",
 	}
-	require.Equal(t, expSystemUsers, opts.SystemUsers())
+	must.Eq(t, expSystemUsers, opts.SystemUsers())
 
 	expGithubUsers := map[string]string{
 		"alice": "alice",
 		"bobby": "bob",
 	}
-	require.Equal(t, expGithubUsers, opts.GithubUsers())
+	must.Eq(t, expGithubUsers, opts.GithubUsers())
 
 	expGitlabUsers := map[string]string{
 		"alice": "alison",
 		"ned":   "ned",
 	}
-	require.Equal(t, expGitlabUsers, opts.GitlabUsers())
+	must.Eq(t, expGitlabUsers, opts.GitlabUsers())
 }
 
 func Test_Loader_noFile(t *testing.T) {
 	l := NewLoader("/path/does/not/ever/exist/for/anybody")
 	_, err := l.Load()
-	require.Error(t, err)
+	must.Error(t, err)
 }
 
 func Test_Loader_badFormat(t *testing.T) {
 	l := NewLoader("../../hack/tests/config.2")
 	_, err := l.Load()
-	require.Error(t, err)
+	must.Error(t, err)
 }
