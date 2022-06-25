@@ -26,7 +26,7 @@ There is only one argument, `--configfile` which specifies the location of the c
 that `ssh-key-sync` will read on startup.
 
 ```golang
-ssh-key-sync --configfile /etc/ssh-key-sync.config
+ssh-key-sync --configfile /etc/ssh-key-sync.json
 ```
 
 #### Configuration
@@ -41,7 +41,8 @@ Github SSH public keys are made available to the public. Gitlab SSH keys are acc
 administrative account, so a service user with an API token will be required.
 
 Use the following example as a template for creating a configuration file.
-```
+
+```json
 {
     "system": [
         {"user": "clarkk", "authorized_keys_file": "/home/clarkk/.ssh/authorized_keys"},
@@ -78,7 +79,7 @@ suite your needs. More examples can be found in this [blog post](https://jason.t
 Description=Synchronize ssh authorized keys with public keys from github.
 
 [Service]
-ExecStart=/opt/keys/ssh-key-sync --configfile /opt/keys/config.json
+ExecStart=/opt/keys/ssh-key-sync --configfile /etc/ssh-key-sync.json
 ```
 
 ##### The timer file `/etc/systemd/system/ssh-key-sync.timer`
