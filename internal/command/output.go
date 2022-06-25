@@ -39,7 +39,7 @@ func (e *execer) writeToFile(file, user, content string) error {
 	fw := atomicfs.NewFileWriter(atomicfs.Options{
 		TmpDirectory: filepath.Dir(file),
 		TmpExtension: "tmp",
-		Mode:         0660,
+		Mode:         0600,
 	})
 
 	if err := fw.Write(strings.NewReader(content), file); err != nil {
