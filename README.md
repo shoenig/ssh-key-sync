@@ -103,7 +103,7 @@ $ systemctl enable ssh-key-sync.timer
 
 # Contributing
 
-The `gophers.dev/pkgs/regexplus` module is always improving with new features
+The `gophers.dev/cmds/ssh-key-sync` tool is always improving with new features
 and error corrections. For contributing bug fixes and new features please file an issue.
 
 # License
