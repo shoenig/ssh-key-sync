@@ -8,8 +8,6 @@ import (
 	"strings"
 )
 
-//go:generate go run github.com/gojuno/minimock/v3/cmd/minimock -g -i KeysReader -s _mock.go
-
 type KeysReader interface {
 	ReadKeys(filename string) ([]Key, error)
 }
