@@ -16,7 +16,7 @@ Module `github.com/shoenig/ssh-key-sync` provides the command `ssh-key-sync`.
 The `ssh-key-sync` command can be installed by running
 
 ```shell
-go install github.com/shoenig/ssh-key-sync@latest
+go install github.com/shoenig/ssh-key-sync@v1.4.0
 ```
 
 #### Example Usage
