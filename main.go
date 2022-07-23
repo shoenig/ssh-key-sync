@@ -12,21 +12,17 @@ import (
 
 func main() {
 	args := config.ParseArguments()
-	loader := config.NewLoader(args.ConfigFile)
-	reader := ssh.NewKeysReader()
-
-	opts, err := loader.Load()
-	if err != nil {
-		fmt.Printf("ssh-key-sync failed to load config: %v\n", err)
+	if args.GitHubUser == "" {
+		_, _ = fmt.Fprintf(os.Stderr, "ssh-key-sync requires --github-user")
 		os.Exit(1)
 	}
 
-	githubClient := netapi.NewGithubClient(opts.Github)
-	gitlabClient := netapi.NewGitlabClient(opts.Gitlab)
+	reader := ssh.NewKeysReader()
+	githubClient := netapi.NewGithubClient(args)
 
-	execer := command.NewExecer(reader, githubClient, gitlabClient)
-	if err := execer.Exec(opts); err != nil {
-		fmt.Printf("ssh-key-sync had error: %s\n", err)
+	exec := command.NewExec(args.Verbose, reader, githubClient)
+	if err := exec.Execute(args); err != nil {
+		_, _ = fmt.Fprintf(os.Stderr, "ssh-key-sync failed with error: %s", err)
 		os.Exit(1)
 	}
 }

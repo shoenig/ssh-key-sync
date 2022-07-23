@@ -35,7 +35,7 @@ func generateFileContent(keys []ssh.Key, now time.Time) string {
 
 // safely write to a tmp file and then do an atomic rename
 
-func (e *execer) writeToFile(file, user, content string) error {
+func (e *exec) writeToFile(file, user, content string) error {
 	fw := atomicfs.NewFileWriter(atomicfs.Options{
 		TmpDirectory: filepath.Dir(file),
 		TmpExtension: "tmp",

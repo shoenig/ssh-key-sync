@@ -2,6 +2,7 @@ package command
 
 import (
 	"fmt"
+	"log"
 	"os"
 	"os/user"
 	"sort"
@@ -9,104 +10,75 @@ import (
 	"time"
 
 	"github.com/shoenig/ssh-key-sync/internal/config"
+	"github.com/shoenig/ssh-key-sync/internal/logs"
 	"github.com/shoenig/ssh-key-sync/internal/netapi"
 	"github.com/shoenig/ssh-key-sync/internal/ssh"
 )
 
-type Execer interface {
-	Exec(*config.Options) error
+type Exec interface {
+	Execute(config.Arguments) error
 }
 
-func NewExecer(
+func NewExec(
+	verbose bool,
 	reader ssh.KeysReader,
 	githubClient netapi.Client,
-	gitlabClient netapi.Client,
-) Execer {
-	return &execer{
+) Exec {
+	return &exec{
+		logger:       logs.New(verbose),
 		reader:       reader,
 		githubClient: githubClient,
-		gitlabClient: gitlabClient,
-
-		fakeChown: false,
 	}
 }
 
-type execer struct {
+type exec struct {
+	logger       *log.Logger
 	reader       ssh.KeysReader
 	githubClient netapi.Client
-	gitlabClient netapi.Client
-
-	// testing configuration only
-	fakeChown bool
 }
 
-func (e *execer) Exec(opts *config.Options) error {
-	users2keyfiles := opts.SystemUsers()
-	users2github := opts.GithubUsers()
-	users2gitlab := opts.GitlabUsers()
-
-	for username, keyfile := range users2keyfiles {
-		if err := e.processUser(username, keyfile, users2github, users2gitlab); err != nil {
-			return err
-		}
-	}
-
-	return nil
+func (e *exec) Execute(args config.Arguments) error {
+	return e.processUser(args.SystemUser, args.GitHubUser, args.AuthorizedKeys)
 }
 
-func (e *execer) processUser(
-	user,
-	keyfile string,
-	users2github,
-	users2gitlab map[string]string,
-) error {
+func (e *exec) processUser(systemUser, githubUser, keyFile string) error {
+	e.logger.Printf("process local user %s from %s@github", systemUser, githubUser)
 
 	// 1) ensure the authorized key file exists, and belongs to user
-	if err := e.touch(keyfile, user); err != nil {
-		return fmt.Errorf("failed to touch %q for user %q: %v", keyfile, user, err)
+	if err := e.touch(keyFile, systemUser); err != nil {
+		return fmt.Errorf("failed to touch %q for user %q: %w", keyFile, systemUser, err)
 	}
 
 	// 2) load existing keys from authorization file
-	localKeys, err := e.reader.ReadKeys(keyfile)
+	localKeys, err := e.reader.ReadKeys(keyFile)
 	if err != nil {
-		return fmt.Errorf("failed to load keys from %q for user %q: %v", keyfile, user, err)
+		return fmt.Errorf("failed to load keys from %q for user %q: %w", keyFile, systemUser, err)
 	}
-	fmt.Printf("loaded %d keys for user %q from %q\n", len(localKeys), user, keyfile)
+	e.logger.Printf("loaded %d existing keys for user %q", len(localKeys), systemUser)
 
 	// 3) maybe load keys from github account
-	githubKeys, err := e.getKeys(e.githubClient, user, users2github)
+	githubKeys, err := e.getKeys(e.githubClient, githubUser)
 	if err != nil {
-		return fmt.Errorf("failed to fetch keys from github for user %q: %v", user, err)
+		return fmt.Errorf("failed to fetch keys from github user %q: %w", githubUser, err)
 	}
-	fmt.Printf("retrieved %d keys for user %q from github\n", len(githubKeys), user)
-
-	// 4) maybe load keys from gitlab account
-	gitlabKeys, err := e.getKeys(e.gitlabClient, user, users2gitlab)
-	if err != nil {
-		return fmt.Errorf("failed to fetch keys from gitlab for user %q: %v", user, err)
-	}
-	fmt.Printf("retrieved %d keys for user %q from gitlab\n", len(gitlabKeys), user)
+	e.logger.Printf("retrieved %d keys for github user: %s", len(githubKeys), githubUser)
 
 	// 5) combine the keys, purging old managed keys with the new set
-	newKeys := combine(onlyUnmanaged(localKeys), githubKeys, gitlabKeys)
+	newKeys := combine(onlyUnmanaged(localKeys), githubKeys)
 	content := generateFileContent(newKeys, time.Now())
 
 	// 6) write the new file content to the authorized keys file
-	return e.writeToFile(keyfile, user, content)
+	return e.writeToFile(keyFile, systemUser, content)
 }
 
-func (e *execer) getKeys(client netapi.Client, user string, system2account map[string]string) ([]ssh.Key, error) {
-	username, exists := system2account[user]
-	if !exists {
-		return nil, nil
-	}
-	return client.GetKeys(username)
+func (e *exec) getKeys(client netapi.Client, githubUser string) ([]ssh.Key, error) {
+	return client.GetKeys(githubUser)
 }
 
-func combine(keysets ...[]ssh.Key) []ssh.Key {
+func combine(keySets ...[]ssh.Key) []ssh.Key {
 	result := make([]ssh.Key, 0, 10)
-	for _, keyset := range keysets {
-		result = append(result, keyset...)
+	for _, keySet := range keySets {
+		result = append(result, keySet...)
 	}
 	sort.Sort(ssh.KeySorter(result))
 	return result
@@ -122,7 +94,8 @@ func onlyUnmanaged(keys []ssh.Key) []ssh.Key {
 	return unmanaged
 }
 
-func (e *execer) touch(path, username string) error {
+func (e *exec) touch(path, username string) error {
+	e.logger.Printf("touch key file for %s: %s", username, path)
 	f, err := os.OpenFile(path, os.O_APPEND|os.O_CREATE|os.O_RDONLY, 0600)
 	if err != nil {
 		return err
@@ -134,11 +107,6 @@ func (e *execer) touch(path, username string) error {
 
 	if err := f.Close(); err != nil {
 		return err
-	}
-
-	// if we are configured to fake chown, just return success
-	if e.fakeChown {
-		return nil
 	}
 
 	u, err := user.Lookup(username)
