@@ -3,37 +3,36 @@ package netapi
 import (
 	"encoding/json"
 	"fmt"
+	"log"
 	"net/http"
 	"sort"
 	"strings"
 
-	"gophers.dev/cmds/ssh-key-sync/internal/ssh"
-
+	"github.com/shoenig/ssh-key-sync/internal/config"
+	"github.com/shoenig/ssh-key-sync/internal/logs"
+	"github.com/shoenig/ssh-key-sync/internal/ssh"
 	"gophers.dev/pkgs/ignore"
 )
 
 const (
-	githubURL               = "https://api.github.com"
 	githubKeysPath          = "/users/USERNAME/keys"
 	githubAcceptHeaderValue = "application/vnd.github.v3+json"
 )
 
 // NewGithubClient creates a Client that can be used to communicate
 // with the github API.
-func NewGithubClient(options Optioner) Client {
-	opts := options.Options()
-	if opts == nil {
-		opts = &Options{}
-	}
+func NewGithubClient(args config.Arguments) Client {
 	return &githubClient{
-		url:    opts.url(githubURL),
+		url:    args.GitHubAPI,
 		client: httpClient,
+		logger: logs.New(args.Verbose),
 	}
 }
 
 type githubClient struct {
 	url    string
 	client *http.Client
+	logger *log.Logger
 }
 
 type githubKeySSH struct {
@@ -44,15 +43,15 @@ type githubKeySSH struct {
 func (g *githubClient) GetKeys(user string) ([]ssh.Key, error) {
 	url := appendToURL(g.url, strings.Replace(githubKeysPath, "USERNAME", user, 1))
 
-	var jsonkeys []githubKeySSH
+	var jsonKeys []githubKeySSH
 
-	if err := g.doGet(url, &jsonkeys); err != nil {
+	if err := g.doGet(url, &jsonKeys); err != nil {
 		return nil, err
 	}
 
-	keys := make([]ssh.Key, 0, len(jsonkeys))
-	for _, jsonkey := range jsonkeys {
-		parsed, err := ssh.ParseKey(jsonkey.Key, true)
+	keys := make([]ssh.Key, 0, len(jsonKeys))
+	for _, jsonKey := range jsonKeys {
+		parsed, err := ssh.ParseKey(jsonKey.Key, true)
 		if err != nil {
 			return nil, err
 		}
@@ -65,12 +64,15 @@ func (g *githubClient) GetKeys(user string) ([]ssh.Key, error) {
 }
 
 func (g *githubClient) doGet(url string, i interface{}) error {
+	g.logger.Printf("acquire github keys from %q", url)
+
 	request, err := http.NewRequest(http.MethodGet, url, nil)
 	if err != nil {
 		return err
 	}
+
 	request.Header.Set("Accept", githubAcceptHeaderValue)
-	request.Header.Set("User-Agent", useragent)
+	request.Header.Set("User-Agent", userAgent)
 
 	response, err := g.client.Do(request)
 	if err != nil {

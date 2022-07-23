@@ -26,7 +26,7 @@ func Test_Key_String_full(t *testing.T) {
 
 	expected := "[managed:true user:bob host:host1 value:abc123]"
 	s := k.String()
-	must.EqCmp(t, expected, s)
+	must.Eq(t, expected, s)
 }
 
 func Test_Key_String_empty(t *testing.T) {
@@ -37,7 +37,7 @@ func Test_Key_String_empty(t *testing.T) {
 
 	expected := "[managed:false user: host: value:abc123]"
 	s := k.String()
-	must.EqCmp(t, expected, s)
+	must.Eq(t, expected, s)
 }
 
 func Test_sortByMetadata(t *testing.T) {
@@ -69,6 +69,5 @@ func Test_sortByMetadata(t *testing.T) {
 		key(true, "ned", "h5", "xcvwe"),
 		key(true, "ned", "h5", "zzzzz"),
 	}
-
 	must.Eq(t, expected, keys)
 }
