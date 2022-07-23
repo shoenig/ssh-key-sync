@@ -16,13 +16,13 @@ Module `github.com/shoenig/ssh-key-sync` provides the command `ssh-key-sync`.
 The `ssh-key-sync` command can be installed by running
 
 ```shell
-go install github.com/shoenig/ssh-key-sync@v1.4.0
+go install github.com/shoenig/ssh-key-sync@v1.4.1
 ```
 
 #### Example Usage
 
 There are a few arguments, but typically you should only need to specify `--github-user`.
-The Linux user and authorized_key file are by default assumed to be of the user
+The Linux user and `authorized_key` file are by default assumed to be of the user
 running the command.
 
 ```shell
