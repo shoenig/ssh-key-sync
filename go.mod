@@ -1,4 +1,4 @@
-module gophers.dev/cmds/ssh-key-sync
+module github.com/shoenig/ssh-key-sync
 
 go 1.18
 

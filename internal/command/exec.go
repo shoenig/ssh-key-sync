@@ -8,9 +8,9 @@ import (
 	"strconv"
 	"time"
 
-	"gophers.dev/cmds/ssh-key-sync/internal/config"
-	"gophers.dev/cmds/ssh-key-sync/internal/netapi"
-	"gophers.dev/cmds/ssh-key-sync/internal/ssh"
+	"github.com/shoenig/ssh-key-sync/internal/config"
+	"github.com/shoenig/ssh-key-sync/internal/netapi"
+	"github.com/shoenig/ssh-key-sync/internal/ssh"
 )
 
 type Execer interface {

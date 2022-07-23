@@ -6,9 +6,9 @@ import (
 	"testing"
 
 	"github.com/shoenig/test/must"
-	"gophers.dev/cmds/ssh-key-sync/internal/config"
-	"gophers.dev/cmds/ssh-key-sync/internal/netapi"
-	"gophers.dev/cmds/ssh-key-sync/internal/ssh"
+	"github.com/shoenig/ssh-key-sync/internal/config"
+	"github.com/shoenig/ssh-key-sync/internal/netapi"
+	"github.com/shoenig/ssh-key-sync/internal/ssh"
 )
 
 func mkdirs(t *testing.T, fp string) {

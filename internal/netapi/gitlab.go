@@ -10,7 +10,7 @@ import (
 
 	"github.com/pkg/errors"
 
-	"gophers.dev/cmds/ssh-key-sync/internal/ssh"
+	"github.com/shoenig/ssh-key-sync/internal/ssh"
 
 	"gophers.dev/pkgs/ignore"
 )

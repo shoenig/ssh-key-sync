@@ -4,7 +4,7 @@ import (
 	"encoding/json"
 	"os"
 
-	"gophers.dev/cmds/ssh-key-sync/internal/netapi"
+	"github.com/shoenig/ssh-key-sync/internal/netapi"
 )
 
 //go:generate go run github.com/gojuno/minimock/v3/cmd/minimock -g -i Loader -s _mock.go

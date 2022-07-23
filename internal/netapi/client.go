@@ -6,8 +6,8 @@ import (
 	"strings"
 	"time"
 
-	"gophers.dev/cmds/ssh-key-sync/internal/meta"
-	"gophers.dev/cmds/ssh-key-sync/internal/ssh"
+	"github.com/shoenig/ssh-key-sync/internal/meta"
+	"github.com/shoenig/ssh-key-sync/internal/ssh"
 )
 
 //go:generate go run github.com/gojuno/minimock/v3/cmd/minimock -g -i Client -s _mock.go
@@ -49,5 +49,5 @@ var (
 	httpClient = &http.Client{Timeout: 10 * time.Second}
 
 	// the user-agent to use for all http requests
-	useragent = fmt.Sprintf("ssh-key-sync bot/%s (https://gophers.dev/cmds/ssh-key-sync)", meta.Version)
+	useragent = fmt.Sprintf("ssh-key-sync bot/%s (https://github.com/shoenig/ssh-key-sync)", meta.Version)
 )

@@ -8,7 +8,7 @@ import (
 	"time"
 
 	"github.com/shoenig/test/must"
-	"gophers.dev/cmds/ssh-key-sync/internal/ssh"
+	"github.com/shoenig/ssh-key-sync/internal/ssh"
 )
 
 func Test_writeToFile(t *testing.T) {
