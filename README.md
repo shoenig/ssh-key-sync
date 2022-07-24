@@ -40,8 +40,6 @@ Usage of ./ssh-key-sync:
     	specify the GitHub API endpoint (default "https://api.github.com")
   -github-user string
     	specify the github user
-  -system-home string
-    	specify path to unix home directories (default "/home")
   -system-user string
     	specify the unix system user (default "$USER")
   -verbose
