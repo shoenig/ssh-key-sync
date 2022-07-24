@@ -5,6 +5,7 @@ import (
 	"log"
 	"os"
 	"os/user"
+	"path/filepath"
 	"sort"
 	"strconv"
 	"time"
@@ -38,6 +39,13 @@ type exec struct {
 }
 
 func (e *exec) Execute(args config.Arguments) error {
+	switch args.AuthorizedKeys {
+	case "":
+		args.AuthorizedKeys = filepath.Join("/home", args.SystemUser, ".ssh", "authorized_keys")
+		e.logger.Printf("using default output authorized_keys file (%s)", args.AuthorizedKeys)
+	default:
+		e.logger.Printf("using configured output authorized_keys file (%s)", args.AuthorizedKeys)
+	}
 	return e.processUser(args.SystemUser, args.GitHubUser, args.AuthorizedKeys)
 }
 
