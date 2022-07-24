@@ -2,6 +2,7 @@ package config
 
 import (
 	"flag"
+	"fmt"
 	"os"
 	"path/filepath"
 )
@@ -31,16 +32,11 @@ func ParseArguments() Arguments {
 	)
 
 	home := filepath.Dir(os.Getenv("HOME"))
-	flag.StringVar(
-		&args.SystemHome,
-		"system-home", home, "specify path to unix home directories",
-	)
-
 	keys := filepath.Join(home, args.SystemUser, ".ssh", "authorized_keys")
 	flag.StringVar(
 		&args.AuthorizedKeys,
-		"authorized-keys", keys,
-		"override the output authorized_keys file",
+		"authorized-keys", "",
+		fmt.Sprintf("override the output authorized_keys file (%s)", keys),
 	)
 
 	flag.StringVar(

@@ -13,7 +13,7 @@ import (
 func main() {
 	args := config.ParseArguments()
 	if args.GitHubUser == "" {
-		_, _ = fmt.Fprintf(os.Stderr, "ssh-key-sync requires --github-user")
+		_, _ = fmt.Fprintf(os.Stderr, "ssh-key-sync requires --github-user\n")
 		os.Exit(1)
 	}
 
@@ -22,7 +22,7 @@ func main() {
 
 	exec := command.NewExec(args.Verbose, reader, githubClient)
 	if err := exec.Execute(args); err != nil {
-		_, _ = fmt.Fprintf(os.Stderr, "ssh-key-sync failed with error: %s", err)
+		_, _ = fmt.Fprintf(os.Stderr, "ssh-key-sync failed with error: %s\n", err)
 		os.Exit(1)
 	}
 }
