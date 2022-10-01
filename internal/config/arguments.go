@@ -4,8 +4,19 @@ import (
 	"flag"
 	"fmt"
 	"os"
+	"os/user"
 	"path/filepath"
 )
+
+var current string
+
+func init() {
+	u, err := user.Current()
+	if err != nil {
+		panic("unable to lookup current user")
+	}
+	current = u.Username
+}
 
 type Arguments struct {
 	Verbose bool
@@ -18,37 +29,45 @@ type Arguments struct {
 	GitHubAPI  string
 }
 
-func ParseArguments() Arguments {
-	var args Arguments
+func defaultUser() string {
+	if u := os.Getenv("USER"); u != "" {
+		return u
+	}
+	return current
+}
 
-	flag.BoolVar(
-		&args.Verbose,
+func ParseArguments(program string, args []string) Arguments {
+	flags := flag.NewFlagSet(program, flag.PanicOnError)
+	var arguments Arguments
+
+	flags.BoolVar(
+		&arguments.Verbose,
 		"verbose", false, "print verbose logging",
 	)
 
-	flag.StringVar(
-		&args.SystemUser,
-		"system-user", os.Getenv("USER"), "specify the unix system user",
+	flags.StringVar(
+		&arguments.SystemUser,
+		"system-user", defaultUser(), "specify the unix system user",
 	)
 
 	home := filepath.Dir(os.Getenv("HOME"))
-	keys := filepath.Join(home, args.SystemUser, ".ssh", "authorized_keys")
-	flag.StringVar(
-		&args.AuthorizedKeys,
+	keys := filepath.Join(home, arguments.SystemUser, ".ssh", "authorized_keys")
+	flags.StringVar(
+		&arguments.AuthorizedKeys,
 		"authorized-keys", "",
 		fmt.Sprintf("override the output authorized_keys file (%s)", keys),
 	)
 
-	flag.StringVar(
-		&args.GitHubUser,
+	flags.StringVar(
+		&arguments.GitHubUser,
 		"github-user", "", "specify the github user",
 	)
 
-	flag.StringVar(
-		&args.GitHubAPI,
+	flags.StringVar(
+		&arguments.GitHubAPI,
 		"github-api", "https://api.github.com", "specify the GitHub API endpoint",
 	)
 
-	flag.Parse()
-	return args
+	_ = flags.Parse(args)
+	return arguments
 }

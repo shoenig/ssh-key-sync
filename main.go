@@ -11,7 +11,7 @@ import (
 )
 
 func main() {
-	args := config.ParseArguments()
+	args := config.ParseArguments(os.Args[0], os.Args[1:])
 	if args.GitHubUser == "" {
 		_, _ = fmt.Fprintf(os.Stderr, "ssh-key-sync requires --github-user\n")
 		os.Exit(1)
