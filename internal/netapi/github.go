@@ -5,9 +5,9 @@ import (
 	"fmt"
 	"log"
 	"net/http"
-	"sort"
 	"strings"
 
+	"github.com/hashicorp/go-set"
 	"github.com/shoenig/ssh-key-sync/internal/config"
 	"github.com/shoenig/ssh-key-sync/internal/logs"
 	"github.com/shoenig/ssh-key-sync/internal/ssh"
@@ -40,7 +40,7 @@ type githubKeySSH struct {
 	Key string `json:"key"`
 }
 
-func (g *githubClient) GetKeys(user string) ([]ssh.Key, error) {
+func (g *githubClient) GetKeys(user string) (*set.Set[ssh.Key], error) {
 	url := appendToURL(g.url, strings.Replace(githubKeysPath, "USERNAME", user, 1))
 
 	var jsonKeys []githubKeySSH
@@ -49,17 +49,15 @@ func (g *githubClient) GetKeys(user string) ([]ssh.Key, error) {
 		return nil, err
 	}
 
-	keys := make([]ssh.Key, 0, len(jsonKeys))
+	keys := set.New[ssh.Key](len(jsonKeys))
 	for _, jsonKey := range jsonKeys {
 		parsed, err := ssh.ParseKey(jsonKey.Key, true)
 		if err != nil {
-			return nil, err
+			g.logger.Printf("failed to parse key: %v", err)
+			continue
 		}
-		keys = append(keys, parsed)
+		keys.Insert(parsed)
 	}
-
-	sort.Sort(ssh.KeySorter(keys))
-
 	return keys, nil
 }
 

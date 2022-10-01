@@ -4,28 +4,29 @@ import (
 	"bufio"
 	"errors"
 	"os"
-	"sort"
 	"strings"
+
+	"github.com/hashicorp/go-set"
 )
 
 type KeysReader interface {
-	ReadKeys(filename string) ([]Key, error)
+	ReadKeys(filename string) (*set.Set[Key], error)
 }
 
 func NewKeysReader() KeysReader {
-	return &keysReader{}
+	return &reader{}
 }
 
-type keysReader struct{}
+type reader struct{}
 
-func (kr *keysReader) ReadKeys(filename string) ([]Key, error) {
-	f, err := os.Open(filename)
-	if err != nil {
-		return nil, err
+func (r *reader) ReadKeys(filename string) (*set.Set[Key], error) {
+	f, fErr := os.Open(filename)
+	if fErr != nil {
+		return nil, fErr
 	}
 
 	s := bufio.NewScanner(f)
-	keys := make([]Key, 0, 10)
+	keys := set.New[Key](10)
 	managed := false
 	for s.Scan() {
 		line := strings.TrimSpace(s.Text())
@@ -36,16 +37,20 @@ func (kr *keysReader) ReadKeys(filename string) ([]Key, error) {
 		case isIgnorable(line):
 			continue
 		default:
+			if managed {
+				// managed keys will get renewed; we ignore them here so dead
+				// keys get pruned as expected
+				managed = false
+				continue
+			}
 			key, err := ParseKey(line, managed)
 			if err != nil {
-				return nil, err
+				// log something
+				continue
 			}
-			keys = append(keys, key)
-			managed = false
+			keys.Insert(key)
 		}
 	}
-
-	sort.Sort(KeySorter(keys))
 
 	return keys, s.Err()
 }
