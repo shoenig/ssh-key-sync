@@ -8,10 +8,10 @@ import (
 	"strings"
 
 	"github.com/hashicorp/go-set"
+	"github.com/shoenig/ignore"
 	"github.com/shoenig/ssh-key-sync/internal/config"
 	"github.com/shoenig/ssh-key-sync/internal/logs"
 	"github.com/shoenig/ssh-key-sync/internal/ssh"
-	"gophers.dev/pkgs/ignore"
 )
 
 const (
