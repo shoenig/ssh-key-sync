@@ -2,12 +2,10 @@ package command
 
 import (
 	"bytes"
-	"path/filepath"
-	"strings"
+	"os"
 	"time"
 
 	"github.com/shoenig/ssh-key-sync/internal/ssh"
-	"gophers.dev/pkgs/atomicfs"
 )
 
 func generateFileContent(keys []ssh.Key, now time.Time) string {
@@ -33,18 +31,7 @@ func generateFileContent(keys []ssh.Key, now time.Time) string {
 	return buf.String()
 }
 
-// safely write to a tmp file and then do an atomic rename
-
-func (e *exec) writeToFile(file, user, content string) error {
-	fw := atomicfs.NewFileWriter(atomicfs.Options{
-		TmpDirectory: filepath.Dir(file),
-		TmpExtension: "tmp",
-		Mode:         0600,
-	})
-
-	if err := fw.Write(strings.NewReader(content), file); err != nil {
-		return err
-	}
-
-	return e.touch(file, user)
+// write to authorized_keys file
+func (e *exec) writeToFile(file, content string) error {
+	return os.WriteFile(file, []byte(content), 0600)
 }

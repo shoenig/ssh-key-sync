@@ -10,7 +10,7 @@ func compareToFile(t *testing.T, filename string, expected []Key) {
 	reader := NewKeysReader()
 	keys, err := reader.ReadKeys(filename)
 	must.NoError(t, err)
-	must.Eq(t, expected, keys)
+	must.SliceContainsAll(t, expected, keys.List())
 }
 
 func Test_read_1(t *testing.T) {

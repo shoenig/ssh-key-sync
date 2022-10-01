@@ -5,13 +5,14 @@ import (
 	"net/http"
 	"time"
 
+	"github.com/hashicorp/go-set"
 	"github.com/shoenig/ssh-key-sync/internal/ssh"
 )
 
 // A Client is used to acquire keys from an API service like
 // github/gitlab (public or internal).
 type Client interface {
-	GetKeys(user string) ([]ssh.Key, error)
+	GetKeys(user string) (*set.Set[ssh.Key], error)
 }
 
 var (
