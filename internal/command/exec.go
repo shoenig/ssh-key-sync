@@ -5,13 +5,13 @@ import (
 	"log"
 	"path/filepath"
 	"sort"
-	"time"
 
 	"github.com/hashicorp/go-set"
 	"github.com/shoenig/ssh-key-sync/internal/config"
 	"github.com/shoenig/ssh-key-sync/internal/logs"
 	"github.com/shoenig/ssh-key-sync/internal/netapi"
 	"github.com/shoenig/ssh-key-sync/internal/ssh"
+	"oss.indeed.com/go/libtime"
 )
 
 type Exec interface {
@@ -27,6 +27,8 @@ func NewExec(
 		logger:       logs.New(verbose),
 		reader:       reader,
 		githubClient: githubClient,
+		clock:        libtime.SystemClock(),
+		writeKeyFile: writeToFile,
 	}
 }
 
@@ -34,6 +36,8 @@ type exec struct {
 	logger       *log.Logger
 	reader       ssh.KeysReader
 	githubClient netapi.Client
+	clock        libtime.Clock
+	writeKeyFile func(filename, content string) error
 }
 
 func (e *exec) Execute(args config.Arguments) error {
@@ -66,10 +70,10 @@ func (e *exec) processUser(systemUser, githubUser, keyFile string) error {
 
 	// 3) combine the keys, purging old managed keys with the new set
 	newKeys := combine(localKeys, githubKeys)
-	content := generateFileContent(newKeys, time.Now())
+	content := generateFileContent(newKeys, e.clock.Now())
 
 	// 4) write the new file content to the authorized keys file
-	return e.writeToFile(keyFile, content)
+	return e.writeKeyFile(keyFile, content)
 }
 
 func combine(local, gh *set.Set[ssh.Key]) []ssh.Key {

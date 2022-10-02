@@ -32,6 +32,6 @@ func generateFileContent(keys []ssh.Key, now time.Time) string {
 }
 
 // write to authorized_keys file
-func (e *exec) writeToFile(file, content string) error {
+func writeToFile(file, content string) error {
 	return os.WriteFile(file, []byte(content), 0600)
 }
