@@ -2,3 +2,5 @@
 ssh-key-sync
 **/cover.out
 vendor/
+
+dist/
