@@ -13,10 +13,11 @@ Module `github.com/shoenig/ssh-key-sync` provides the command `ssh-key-sync`.
 
 # Getting Started
 
-The `ssh-key-sync` command can be installed by running
+The `ssh-key-sync` command can be downloaded from the [releases](https://github.com/shoenig/ssh-key-sync/releases) page.
 
+Alternatively, you can use Go directly.
 ```shell
-go install github.com/shoenig/ssh-key-sync@v1.4.1
+go install github.com/shoenig/ssh-key-sync@v1.5.1
 ```
 
 #### Example Usage
