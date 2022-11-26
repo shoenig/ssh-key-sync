@@ -14,7 +14,7 @@ type KeysReader interface {
 }
 
 func NewKeysReader() KeysReader {
-	return &reader{}
+	return new(reader)
 }
 
 type reader struct{}
