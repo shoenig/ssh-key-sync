@@ -10,7 +10,7 @@ func compareToFile(t *testing.T, filename string, expected []Key) {
 	reader := NewKeysReader()
 	keys, err := reader.ReadKeys(filename)
 	must.NoError(t, err)
-	must.SliceContainsSubset(t, expected, keys.List()) // FIXME (should be 6)
+	must.SliceContainsAll(t, expected, keys.List())
 }
 
 func Test_read_1(t *testing.T) {
@@ -45,24 +45,6 @@ func Test_read_2(t *testing.T) {
 			"bob",
 			"h1",
 			"ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAADJKlkjkfjlkjff==",
-		),
-		key(
-			true,
-			"alice",
-			"h1",
-			"ssh-rsa AAAAB3NzaD1yc2EAAAADAQABAAAAgQCoiewjflsdf==",
-		),
-		key(
-			true,
-			"alice",
-			"h2",
-			"ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAAAgQDQ9Tf0lycls==",
-		),
-		key(
-			true,
-			"bob",
-			"h2",
-			"ssh-edsa AAAAB3NzaC1yc2EAdlksjflksdjflksdjflsdkdj==",
 		),
 	}
 

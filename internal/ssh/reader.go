@@ -45,7 +45,6 @@ func (r *reader) ReadKeys(filename string) (*set.Set[Key], error) {
 			}
 			key, err := ParseKey(line, managed)
 			if err != nil {
-				// log something
 				continue
 			}
 			keys.Insert(key)
