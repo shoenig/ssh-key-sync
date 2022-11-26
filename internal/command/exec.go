@@ -48,7 +48,16 @@ func (e *exec) Execute(args config.Arguments) error {
 	default:
 		e.logger.Printf("using configured output authorized_keys file (%s)", args.AuthorizedKeys)
 	}
-	return e.processUser(args.SystemUser, args.GitHubUser, args.AuthorizedKeys)
+
+	if err := lockdown(args.AuthorizedKeys); err != nil {
+		return err
+	}
+
+	if err := e.processUser(args.SystemUser, args.GitHubUser, args.AuthorizedKeys); err != nil {
+		return err
+	}
+
+	return nil
 }
 
 func (e *exec) processUser(systemUser, githubUser, keyFile string) error {
