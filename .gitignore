@@ -3,4 +3,8 @@ ssh-key-sync
 **/cover.out
 vendor/
 
+# releases
 dist/
+
+# macOS
+.DS_Store
