@@ -6,6 +6,10 @@ builds:
       - CGO_ENABLED=0
     goos:
       - linux
+      - darwin
+      - freebsd
+      - openbsd
+      - plan9
 checksum:
   name_template: 'checksums.txt'
 snapshot:

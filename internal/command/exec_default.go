@@ -6,6 +6,6 @@ import (
 	"github.com/shoenig/go-landlock"
 )
 
-func lockdown(keyFile string) error {
+func paths(keyFile string) []*landlock.Path {
 	return nil
 }
