@@ -6,11 +6,10 @@ import (
 	"github.com/shoenig/go-landlock"
 )
 
-func lockdown(keyFile string) error {
-	ll := landlock.New(
+func paths(keyFile string) []*landlock.Path {
+	return []*landlock.Path{
 		landlock.Certs(),
 		landlock.DNS(),
 		landlock.File(keyFile, "rw"),
-	)
-	return ll.Lock(landlock.Mandatory)
+	}
 }

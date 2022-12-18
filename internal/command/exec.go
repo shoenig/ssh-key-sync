@@ -7,6 +7,7 @@ import (
 	"sort"
 
 	"github.com/hashicorp/go-set"
+	"github.com/shoenig/go-landlock"
 	"github.com/shoenig/ssh-key-sync/internal/config"
 	"github.com/shoenig/ssh-key-sync/internal/logs"
 	"github.com/shoenig/ssh-key-sync/internal/netapi"
@@ -90,4 +91,9 @@ func combine(local, gh *set.Set[ssh.Key]) []ssh.Key {
 	result := union.List()
 	sort.Sort(ssh.KeySorter(result))
 	return result
+}
+
+func lockdown(keyfile string) error {
+	ll := landlock.New(paths(keyfile)...)
+	return ll.Lock(landlock.OnlySupported)
 }
