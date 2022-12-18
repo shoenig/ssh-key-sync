@@ -17,7 +17,7 @@ The `ssh-key-sync` command can be downloaded from the [releases](https://github.
 
 Alternatively, you can use Go directly.
 ```shell
-go install github.com/shoenig/ssh-key-sync@v1.5.1
+go install github.com/shoenig/ssh-key-sync@latest
 ```
 
 #### Example Usage
