@@ -4,9 +4,9 @@ go 1.18
 
 require (
 	github.com/hashicorp/go-set v0.1.6
-	github.com/shoenig/go-landlock v0.1.2
+	github.com/shoenig/go-landlock v0.1.3
 	github.com/shoenig/ignore v0.4.0
-	github.com/shoenig/test v0.4.5
+	github.com/shoenig/test v0.5.2
 	oss.indeed.com/go/libtime v1.6.0
 )
 
