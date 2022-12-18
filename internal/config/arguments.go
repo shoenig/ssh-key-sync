@@ -27,6 +27,12 @@ type Arguments struct {
 
 	GitHubUser string
 	GitHubAPI  string
+
+	usage func()
+}
+
+func (a Arguments) Usage() {
+	a.usage()
 }
 
 func defaultUser() string {
@@ -37,7 +43,7 @@ func defaultUser() string {
 }
 
 func ParseArguments(program string, args []string) Arguments {
-	flags := flag.NewFlagSet(program, flag.PanicOnError)
+	flags := flag.NewFlagSet(program, flag.ContinueOnError)
 	var arguments Arguments
 
 	flags.BoolVar(
@@ -69,5 +75,6 @@ func ParseArguments(program string, args []string) Arguments {
 	)
 
 	_ = flags.Parse(args)
+	arguments.usage = flags.Usage
 	return arguments
 }
