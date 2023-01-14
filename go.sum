@@ -43,8 +43,8 @@ github.com/shoenig/go-landlock v0.1.4 h1:E5I0QhMlY/gwmhRPMVLlboJTW2mcMZG7g8NfATF
 github.com/shoenig/go-landlock v0.1.4/go.mod h1:4r9IOhhNbzc9yVANPYUervTsamQCPWC/e5Tg7WgR9Ss=
 github.com/shoenig/ignore v0.4.0 h1:qPOWs0slbPMtenC0H3cKvu5Kn3hQFTE3yK6YJvyNDlA=
 github.com/shoenig/ignore v0.4.0/go.mod h1:VF91FoiYAwXq4KinOq6zP5xfFw/Ib6MfftaGKYTpmwo=
-github.com/shoenig/test v0.5.2 h1:ELZ7qZ/6CPrT71PXrSe2TFzLs4/cGCqqU5lZ5RhZ+B8=
-github.com/shoenig/test v0.5.2/go.mod h1:xYtyGBC5Q3kzCNyJg/SjgNpfAa2kvmgA0i5+lQso8x0=
+github.com/shoenig/test v0.6.0 h1:rU0ymLHmCRqz14gABce/DzYryKU+uaWqobCBvAY6DtU=
+github.com/shoenig/test v0.6.0/go.mod h1:xYtyGBC5Q3kzCNyJg/SjgNpfAa2kvmgA0i5+lQso8x0=
 github.com/sirupsen/logrus v1.2.0/go.mod h1:LxeOpSwHxABJmUn/MG1IvRgCAasNZTLOkJPxbbu5VWo=
 github.com/stretchr/objx v0.1.0/go.mod h1:HFkY916IF+rwdDfMAkV7OtwuqBVzrE8GR6GFx+wExME=
 github.com/stretchr/objx v0.1.1/go.mod h1:HFkY916IF+rwdDfMAkV7OtwuqBVzrE8GR6GFx+wExME=
