@@ -20,8 +20,8 @@ type Exec interface {
 }
 
 func NewExec(
-	verbose bool,
 	prune bool,
+	verbose bool,
 	reader ssh.KeysReader,
 	githubClient netapi.Client,
 ) Exec {
