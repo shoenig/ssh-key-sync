@@ -29,3 +29,15 @@ func TestSystemUser(t *testing.T) {
 		must.Eq(t, u.Username, args.SystemUser)
 	})
 }
+
+func TestPrune(t *testing.T) {
+	t.Run("no", func(t *testing.T) {
+		args := ParseArguments(program, []string{})
+		must.False(t, args.Prune)
+	})
+
+	t.Run("yes", func(t *testing.T) {
+		args := ParseArguments(program, []string{"--prune"})
+		must.True(t, args.Prune)
+	})
+}

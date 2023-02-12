@@ -16,8 +16,8 @@ github.com/golang/protobuf v1.2.0/go.mod h1:6lQm79b+lXiMfvg/cZm0SGofjICqVBUtrP5y
 github.com/golang/protobuf v1.3.1/go.mod h1:6lQm79b+lXiMfvg/cZm0SGofjICqVBUtrP5yJMmIC1U=
 github.com/google/go-cmp v0.5.9 h1:O2Tfq5qg4qc4AmwVlvv0oLiVAGB7enBSJ2x2DqQFi38=
 github.com/google/go-cmp v0.5.9/go.mod h1:17dUlkBOakJ0+DkrSSNjCkIjxS6bF9zb3elmeNGIjoY=
-github.com/hashicorp/go-set v0.1.8 h1:q2r58lFkJrikmC4I+vS3A+bn6QgR7EYeFD8kRiAIAnk=
-github.com/hashicorp/go-set v0.1.8/go.mod h1:wedp+UE6HoxBywExd7mrdGdcXOo3awtiELmnRnpzsKI=
+github.com/hashicorp/go-set v0.1.9 h1:XuQSsDfOAvgRjoKWG2qg8NxVEQJMXGdrZh8BgX6O8n4=
+github.com/hashicorp/go-set v0.1.9/go.mod h1:/IR7VHUqnKI+QfKkaMjZ575bf65Y8DzHRKnOobRpNcQ=
 github.com/hexdigest/gowrap v1.1.7/go.mod h1:Z+nBFUDLa01iaNM+/jzoOA1JJ7sm51rnYFauKFUB5fs=
 github.com/json-iterator/go v1.1.6/go.mod h1:+SdeFBvtyEkXs7REEP0seUULqWtbJapLOCVDaaPEHmU=
 github.com/julienschmidt/httprouter v1.2.0/go.mod h1:SYymIcj16QtmaHHD7aYtjjsJG7VTCxuUUipMqKk8s4w=
