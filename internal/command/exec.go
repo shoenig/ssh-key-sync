@@ -94,7 +94,7 @@ func (e *exec) processUser(systemUser, githubUser, keyFile string) error {
 
 func (e *exec) combine(local, gh *set.Set[ssh.Key]) []ssh.Key {
 	if e.prune {
-		e.logger.Printf("pruning %d non-github keys", local.Size())
+		e.logger.Printf("pruning %d non-github managed keys", local.Size())
 		result := gh.Slice()
 		sort.Sort(ssh.KeySorter(result))
 		return result

@@ -43,6 +43,8 @@ Usage of ./ssh-key-sync:
     	specify the github user
   -system-user string
     	specify the unix system user (default "$USER")
+  -prune
+        delete all keys not found in github
   -verbose
     	print verbose logging
 ```
