@@ -6,7 +6,7 @@ build: clean
 
 .PHONY: clean
 clean:
-	rm -f output/ssh-key-sync
+	rm -rf dist output/ssh-key-sync
 
 .PHONY: test
 test:
@@ -15,5 +15,10 @@ test:
 .PHONY: vet
 vet:
 	go vet ./...
+
+.PHONY: release
+release:
+	envy exec gh-release goreleaser release --clean
+	$(MAKE) clean
 
 default: build
