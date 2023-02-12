@@ -17,6 +17,6 @@ func Start(args []string) error {
 
 	reader := ssh.NewKeysReader()
 	githubClient := netapi.NewGithubClient(arguments)
-	exe := NewExec(arguments.Verbose, reader, githubClient)
+	exe := NewExec(arguments.Prune, arguments.Verbose, reader, githubClient)
 	return exe.Execute(arguments)
 }

@@ -20,6 +20,7 @@ func init() {
 
 type Arguments struct {
 	Verbose bool
+	Prune   bool
 
 	SystemUser     string
 	SystemHome     string
@@ -49,6 +50,11 @@ func ParseArguments(program string, args []string) Arguments {
 	flags.BoolVar(
 		&arguments.Verbose,
 		"verbose", false, "print verbose logging",
+	)
+
+	flags.BoolVar(
+		&arguments.Prune,
+		"prune", false, "delete all keys not found in github",
 	)
 
 	flags.StringVar(

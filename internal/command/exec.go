@@ -20,11 +20,13 @@ type Exec interface {
 }
 
 func NewExec(
+	prune bool,
 	verbose bool,
 	reader ssh.KeysReader,
 	githubClient netapi.Client,
 ) Exec {
 	return &exec{
+		prune:        prune,
 		logger:       logs.New(verbose),
 		reader:       reader,
 		githubClient: githubClient,
@@ -34,6 +36,7 @@ func NewExec(
 }
 
 type exec struct {
+	prune        bool
 	logger       *log.Logger
 	reader       ssh.KeysReader
 	githubClient netapi.Client
@@ -79,16 +82,25 @@ func (e *exec) processUser(systemUser, githubUser, keyFile string) error {
 	e.logger.Printf("retrieved %d keys for github user: %s", githubKeys.Size(), githubUser)
 
 	// 3) combine the keys, purging old managed keys with the new set
-	newKeys := combine(localKeys, githubKeys)
-	content := generateFileContent(newKeys, e.clock.Now())
+	newKeys := e.combine(localKeys, githubKeys)
+	if len(newKeys) == 0 {
+		return fmt.Errorf("no keys! refusing to write empty set of keys")
+	}
 
 	// 4) write the new file content to the authorized keys file
+	content := generateFileContent(newKeys, e.clock.Now())
 	return e.writeKeyFile(keyFile, content)
 }
 
-func combine(local, gh *set.Set[ssh.Key]) []ssh.Key {
+func (e *exec) combine(local, gh *set.Set[ssh.Key]) []ssh.Key {
+	if e.prune {
+		e.logger.Printf("pruning %d non-github managed keys", local.Size())
+		result := gh.Slice()
+		sort.Sort(ssh.KeySorter(result))
+		return result
+	}
 	union := local.Union(gh)
-	result := union.List()
+	result := union.Slice()
 	sort.Sort(ssh.KeySorter(result))
 	return result
 }
