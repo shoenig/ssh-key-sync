@@ -106,6 +106,9 @@ func (e *exec) combine(local, gh *set.Set[ssh.Key]) []ssh.Key {
 }
 
 func lockdown(keyfile string) error {
-	ll := landlock.New(paths(keyfile)...)
-	return ll.Lock(landlock.OnlySupported)
+	if landlock.Available() {
+		ll := landlock.New(paths(keyfile)...)
+		return ll.Lock(landlock.OnlySupported)
+	}
+	return nil
 }
