@@ -1,12 +1,12 @@
-
+NAME = ssh-key-sync
 
 .PHONY: build
 build: clean
-	CGO_ENABLED=0 go build -o output/ssh-key-sync
+	CGO_ENABLED=0 go build -o output/$(NAME)
 
 .PHONY: clean
 clean:
-	rm -rf dist output/ssh-key-sync
+	rm -rf dist output/$(NAME)
 
 .PHONY: test
 test:
