@@ -12,4 +12,4 @@ func main() {
 		fmt.Println("[fatal]", err)
 		os.Exit(1)
 	}
- }
+}

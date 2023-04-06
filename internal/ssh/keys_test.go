@@ -41,7 +41,6 @@ func Test_Key_String_empty(t *testing.T) {
 }
 
 func Test_sortByMetadata(t *testing.T) {
-
 	keys := []Key{
 		key(true, "ned", "h5", "xcvwe"),
 		key(false, "xavior", "h4", "lkdsf"),
