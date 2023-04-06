@@ -1,7 +1,6 @@
 package netapi
 
 import (
-	"fmt"
 	"net/http"
 	"time"
 
@@ -20,5 +19,5 @@ var (
 	httpClient = &http.Client{Timeout: 10 * time.Second}
 
 	// the user-agent to use for all http requests
-	userAgent = fmt.Sprintf("ssh-key-sync bot/v2 (https://github.com/shoenig/ssh-key-sync)")
+	userAgent = "ssh-key-sync bot/v2 (https://github.com/shoenig/ssh-key-sync)"
 )
