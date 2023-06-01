@@ -6,7 +6,7 @@ require (
 	github.com/hashicorp/go-set v0.1.9
 	github.com/shoenig/go-landlock v0.1.5
 	github.com/shoenig/ignore v0.4.0
-	github.com/shoenig/test v0.6.4
+	github.com/shoenig/test v0.6.6
 	oss.indeed.com/go/libtime v1.6.0
 )
 
