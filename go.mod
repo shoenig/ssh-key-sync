@@ -3,7 +3,7 @@ module github.com/shoenig/ssh-key-sync
 go 1.18
 
 require (
-	github.com/hashicorp/go-set v0.1.13
+	github.com/hashicorp/go-set v0.1.14
 	github.com/shoenig/go-landlock v0.1.5
 	github.com/shoenig/ignore v0.4.0
 	github.com/shoenig/test v0.6.6
