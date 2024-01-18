@@ -2,8 +2,6 @@ module github.com/shoenig/ssh-key-sync
 
 go 1.21
 
-toolchain go1.21.6
-
 require (
 	github.com/hashicorp/go-set/v2 v2.1.0
 	github.com/shoenig/go-landlock v1.2.0
