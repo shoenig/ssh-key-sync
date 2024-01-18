@@ -4,7 +4,7 @@ import (
 	"net/http"
 	"time"
 
-	"github.com/hashicorp/go-set"
+	"github.com/hashicorp/go-set/v2"
 	"github.com/shoenig/ssh-key-sync/internal/ssh"
 )
 
