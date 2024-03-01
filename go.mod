@@ -4,7 +4,7 @@ go 1.21
 
 require (
 	github.com/hashicorp/go-set/v2 v2.1.0
-	github.com/shoenig/go-landlock v1.2.0
+	github.com/shoenig/go-landlock v1.2.1
 	github.com/shoenig/ignore v0.4.0
 	github.com/shoenig/test v1.7.0
 	oss.indeed.com/go/libtime v1.6.0
