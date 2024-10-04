@@ -59,13 +59,13 @@ These examples use `linux` and `amd64` - be sure to use the correct version for 
 #### Download Archive
 
 ```shell-session
-$ wget https://github.com/shoenig/ssh-key-sync/releases/download/v1.7.1/ssh-key-sync_1.7.1_linux_amd64.tar.gz
+$ wget https://github.com/shoenig/ssh-key-sync/releases/download/v1.7.2/ssh-key-sync_1.7.2_linux_amd64.tar.gz
 ```
 
 #### Extract Archive
 
 ```shell-session
-$ sudo tar -C /usr/local/bin -xf ssh-key-sync_1.7.1_linux_amd64.tar.gz
+$ sudo tar -C /usr/local/bin -xf ssh-key-sync_1.7.2_linux_amd64.tar.gz
 ```
 
 #### Create `authorized_keys`
