@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"log"
 	"path/filepath"
+	"runtime"
 	"sort"
 
 	"github.com/hashicorp/go-set/v2"
@@ -47,8 +48,14 @@ type exec struct {
 func (e *exec) Execute(args config.Arguments) error {
 	switch args.AuthorizedKeys {
 	case "":
-		args.AuthorizedKeys = filepath.Join("/home", args.SystemUser, ".ssh", "authorized_keys")
-		e.logger.Printf("using default output authorized_keys file (%s)", args.AuthorizedKeys)
+		// check if mac or linux and use different location
+		if runtime.GOOS == "darwin" {
+			args.AuthorizedKeys = filepath.Join("/Users", args.SystemUser, ".ssh", "authorized_keys")
+		} else {
+			args.AuthorizedKeys = filepath.Join("/home", args.SystemUser, ".ssh", "authorized_keys")
+			e.logger.Printf("using default output authorized_keys file (%s)", args.AuthorizedKeys)
+		}
+
 	default:
 		e.logger.Printf("using configured output authorized_keys file (%s)", args.AuthorizedKeys)
 	}
