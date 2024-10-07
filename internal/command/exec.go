@@ -51,10 +51,8 @@ func (e *exec) Execute(args config.Arguments) error {
 		// check if mac or linux and use different location
 		if runtime.GOOS == "darwin" {
 			args.AuthorizedKeys = filepath.Join("/Users", args.SystemUser, ".ssh", "authorized_keys")
-			fmt.Println("Hello from macos")
 		} else {
 			args.AuthorizedKeys = filepath.Join("/home", args.SystemUser, ".ssh", "authorized_keys")
-			fmt.Println("Hello from else")
 			e.logger.Printf("using default output authorized_keys file (%s)", args.AuthorizedKeys)
 		}
 
