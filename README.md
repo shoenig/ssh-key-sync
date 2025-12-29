@@ -4,7 +4,7 @@ ssh-key-sync
 Command `ssh-key-sync` is a tool for managing `authorized_key` files, by synchronizing
 the contents with public keys managed by accounts on [GitHub](https://docs.github.com/en/rest/users/keys).
 
-[![CI](https://github.com/shoenig/ssh-key-sync/actions/workflows/ci.yml/badge.svg)](https://github.com/shoenig/ssh-key-sync/actions/workflows/ci.yml)
+[![CI](https://github.com/shoenig/ssh-key-sync/actions/workflows/ci.yaml/badge.svg)](https://github.com/shoenig/ssh-key-sync/actions/workflows/ci.yaml)
 [![GitHub](https://img.shields.io/github/license/shoenig/ssh-key-sync.svg)](LICENSE)
 
 # Project Overview
