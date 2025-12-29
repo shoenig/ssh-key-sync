@@ -4,7 +4,7 @@ jobs:
   run-lint:  
     runs-on: ubuntu-24.04
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
       - uses: hashicorp/setup-golang@v3
         with:
           version-file: go.mod
@@ -22,7 +22,7 @@ jobs:
           - macos-26
     runs-on: ${{matrix.os}}
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
       - uses: hashicorp/setup-golang@v3
         with:
           version-file: go.mod
