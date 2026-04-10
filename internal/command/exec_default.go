@@ -6,6 +6,6 @@ import (
 	"github.com/shoenig/go-landlock"
 )
 
-func paths(keyFile string) []*landlock.Path {
+func paths(_ string) []*landlock.Path {
 	return nil
 }

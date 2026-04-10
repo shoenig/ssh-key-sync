@@ -1,6 +1,7 @@
 package command
 
 import (
+	"errors"
 	"fmt"
 	"log"
 	"path/filepath"
@@ -91,7 +92,7 @@ func (e *exec) processUser(systemUser, githubUser, keyFile string) error {
 	// 3) combine the keys, purging old managed keys with the new set
 	newKeys := e.combine(localKeys, githubKeys)
 	if len(newKeys) == 0 {
-		return fmt.Errorf("no keys! refusing to write empty set of keys")
+		return errors.New("no keys! refusing to write empty set of keys")
 	}
 
 	// 4) write the new file content to the authorized keys file

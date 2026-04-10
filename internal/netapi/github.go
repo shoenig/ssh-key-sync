@@ -1,6 +1,7 @@
 package netapi
 
 import (
+	"context"
 	"encoding/json"
 	"fmt"
 	"log"
@@ -8,7 +9,6 @@ import (
 	"strings"
 
 	"github.com/hashicorp/go-set/v2"
-	"github.com/shoenig/ignore"
 	"github.com/shoenig/ssh-key-sync/internal/config"
 	"github.com/shoenig/ssh-key-sync/internal/logs"
 	"github.com/shoenig/ssh-key-sync/internal/ssh"
@@ -64,7 +64,7 @@ func (g *githubClient) GetKeys(user string) (*set.Set[ssh.Key], error) {
 func (g *githubClient) doGet(url string, i interface{}) error {
 	g.logger.Printf("acquire github keys from %q", url)
 
-	request, err := http.NewRequest(http.MethodGet, url, nil)
+	request, err := http.NewRequestWithContext(context.Background(), http.MethodGet, url, nil)
 	if err != nil {
 		return err
 	}
@@ -72,11 +72,11 @@ func (g *githubClient) doGet(url string, i interface{}) error {
 	request.Header.Set("Accept", githubAcceptHeaderValue)
 	request.Header.Set("User-Agent", userAgent)
 
-	response, err := g.client.Do(request)
+	response, err := g.client.Do(request) //nolint:bodyclose
 	if err != nil {
 		return err
 	}
-	defer ignore.Drain(response.Body)
+	defer func() { _ = response.Body }()
 
 	if response.StatusCode >= 400 {
 		return fmt.Errorf("request to %q returned code %d", url, response.StatusCode)

@@ -1,6 +1,6 @@
 module github.com/shoenig/ssh-key-sync
 
-go 1.25
+go 1.26
 
 require (
 	github.com/hashicorp/go-set/v2 v2.1.0
