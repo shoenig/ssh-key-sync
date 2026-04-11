@@ -11,7 +11,7 @@ import (
 )
 
 func TestOutput_writeToFile(t *testing.T) {
-	f, err := os.CreateTemp("", "")
+	f, err := os.CreateTemp(t.TempDir(), "")
 	must.NoError(t, err)
 
 	err = f.Close()

@@ -1,35 +1,30 @@
 name: Run CI Tests
-on: [push]
+on:
+  pull_request:
+    paths-ignore:
+      - 'README.md'
+      - 'LICENSE'
+  push:
+    branches:
+      - 'main'
 jobs:
-  run-lint:  
-    runs-on: ubuntu-24.04
-    steps:
-      - uses: actions/checkout@v6
-      - uses: hashicorp/setup-golang@v3
-        with:
-          version-file: go.mod
-      - uses: golangci/golangci-lint-action@v9
-        with:
-          version: v2.7.2
   run-tests:
     strategy:
       fail-fast: false
       matrix:
         os:
-          - ubuntu-22.04
           - ubuntu-24.04
-          - macos-15
           - macos-26
     runs-on: ${{matrix.os}}
     steps:
       - uses: actions/checkout@v6
-      - uses: hashicorp/setup-golang@v3
+      - uses: extractions/setup-just@e33e0265a09d6d736e2ee1e0eb685ef1de4669ff
+      - uses: actions/setup-go@v6
         with:
-          version-file: go.mod
-      - name: Vet
+          go-version-file: go.mod
+      - name: Show System
         run: |
-          make vet
-      - name: Tests
+          just sysinfo
+      - name: Run Tests
         run: |
-          make test
-
+          just init tidy lint tests
