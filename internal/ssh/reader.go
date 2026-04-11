@@ -6,7 +6,7 @@ import (
 	"os"
 	"strings"
 
-	"github.com/hashicorp/go-set/v2"
+	"github.com/hashicorp/go-set/v3"
 )
 
 type KeysReader interface {

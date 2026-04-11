@@ -8,7 +8,7 @@ import (
 	"net/http"
 	"strings"
 
-	"github.com/hashicorp/go-set/v2"
+	"github.com/hashicorp/go-set/v3"
 	"github.com/shoenig/ssh-key-sync/internal/config"
 	"github.com/shoenig/ssh-key-sync/internal/logs"
 	"github.com/shoenig/ssh-key-sync/internal/ssh"
