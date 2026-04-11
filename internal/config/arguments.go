@@ -43,6 +43,23 @@ func defaultUser() string {
 	return current
 }
 
+func NewArguments(verbose, prune bool, systemUser, authorizedKeys, githubUser, githubAPI string) Arguments {
+	if systemUser == "" {
+		systemUser = defaultUser()
+	}
+	if githubAPI == "" {
+		githubAPI = "https://api.github.com"
+	}
+	return Arguments{
+		Verbose:        verbose,
+		Prune:          prune,
+		SystemUser:     systemUser,
+		AuthorizedKeys: authorizedKeys,
+		GitHubUser:     githubUser,
+		GitHubAPI:      githubAPI,
+	}
+}
+
 func ParseArguments(program string, args []string) Arguments {
 	flags := flag.NewFlagSet(program, flag.ContinueOnError)
 	var arguments Arguments

@@ -1,15 +1,14 @@
 package main
 
 import (
-	"fmt"
 	"os"
 
+	"cattlecloud.net/go/babycli"
 	"github.com/shoenig/ssh-key-sync/internal/command"
 )
 
 func main() {
-	if err := command.Start(os.Args); err != nil {
-		fmt.Println("[fatal]", err)
-		os.Exit(1)
-	}
+	args := babycli.Arguments()
+	rc := command.Invoke(args)
+	os.Exit(rc)
 }

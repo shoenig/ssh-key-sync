@@ -3,6 +3,7 @@ module github.com/shoenig/ssh-key-sync
 go 1.26
 
 require (
+	cattlecloud.net/go/babycli v0.2.0
 	github.com/hashicorp/go-set/v3 v3.0.1
 	github.com/shoenig/go-landlock v1.3.0
 	github.com/shoenig/test v1.12.2
@@ -10,6 +11,7 @@ require (
 )
 
 require (
+	cattlecloud.net/go/stacks v1.1.0 // indirect
 	github.com/davecgh/go-spew v1.1.1 // indirect
 	github.com/gojuno/minimock/v3 v3.4.7 // indirect
 	github.com/google/go-cmp v0.6.0 // indirect
