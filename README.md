@@ -40,7 +40,7 @@ USAGE:
   ssh-key-sync  [global options] [command [command options]] [arguments...]
 
 VERSION:
-  deveopment
+  development
 
 DESCRIPTION:
   Sync SSH public keys from GitHub to authorized_keys
