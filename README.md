@@ -33,20 +33,28 @@ ssh-key-sync --github-user <user>
 #### Configuration
 
 ```shell
-ssh-key-sync -help
-Usage of ./ssh-key-sync:
-  -authorized-keys string
-    	override the output authorized_keys file (default "/home/$USER/.ssh/authorized_keys")
-  -github-api string
-    	specify the GitHub API endpoint (default "https://api.github.com")
-  -github-user string
-    	specify the github user
-  -system-user string
-    	specify the unix system user (default "$USER")
-  -prune
-        delete all keys not found in github
-  -verbose
-    	print verbose logging
+NAME:
+  ssh-key-sync
+
+USAGE:
+  ssh-key-sync  [global options] [command [command options]] [arguments...]
+
+VERSION:
+  deveopment
+
+DESCRIPTION:
+  Sync SSH public keys from GitHub to authorized_keys
+
+OPTIONS:
+--verbose/-v        boolean - print verbose logging
+--prune/-p          boolean - delete all keys not found in GitHub
+--system-user/-u     string - specify the unix system user
+--authorized-keys    string - override the output authorized_keys file
+--github-user/-g     string - specify the GitHub user
+--github-api         string - specify the GitHub API endpoint
+
+GLOBALS:
+--help/-h   boolean - print help message
 ```
 
 # Install
@@ -59,13 +67,13 @@ These examples use `linux` and `amd64` - be sure to use the correct version for 
 #### Download Archive
 
 ```shell-session
-$ wget https://github.com/shoenig/ssh-key-sync/releases/download/v1.7.2/ssh-key-sync_1.7.2_linux_amd64.tar.gz
+$ wget https://github.com/shoenig/ssh-key-sync/releases/download/v1.8.1/ssh-key-sync_1.8.1_linux_amd64.tar.gz
 ```
 
 #### Extract Archive
 
 ```shell-session
-$ sudo tar -C /usr/local/bin -xf ssh-key-sync_1.7.2_linux_amd64.tar.gz
+$ sudo tar -C /usr/local/bin -xf ssh-key-sync_1.8.1_linux_amd64.tar.gz
 ```
 
 #### Create `authorized_keys`
