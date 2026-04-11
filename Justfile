@@ -53,4 +53,6 @@ init:
 # publish a release
 [group('release')]
 release:
+    export GORELEASER_CURRENT_TAG={{TAG}}
     envy exec gh-release goreleaser release --clean
+    rm -rf dist

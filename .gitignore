@@ -5,7 +5,7 @@
 **/.DS_Store
 
 # Build artifacts
-site
+ssh-key-sync
 
 # Go workspace file
 go.work
