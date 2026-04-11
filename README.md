@@ -40,7 +40,7 @@ USAGE:
   ssh-key-sync  [global options] [command [command options]] [arguments...]
 
 VERSION:
-  development
+  1.8.2
 
 DESCRIPTION:
   Sync SSH public keys from GitHub to authorized_keys
@@ -67,13 +67,13 @@ These examples use `linux` and `amd64` - be sure to use the correct version for 
 #### Download Archive
 
 ```shell-session
-$ wget https://github.com/shoenig/ssh-key-sync/releases/download/v1.8.1/ssh-key-sync_1.8.1_linux_amd64.tar.gz
+$ wget https://github.com/shoenig/ssh-key-sync/releases/download/v1.8.2/ssh-key-sync_1.8.2_linux_amd64.tar.gz
 ```
 
 #### Extract Archive
 
 ```shell-session
-$ sudo tar -C /usr/local/bin -xf ssh-key-sync_1.8.1_linux_amd64.tar.gz
+$ sudo tar -C /usr/local/bin -xf ssh-key-sync_1.8.2_linux_amd64.tar.gz
 ```
 
 #### Create `authorized_keys`
