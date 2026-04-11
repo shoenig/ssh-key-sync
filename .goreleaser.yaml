@@ -13,6 +13,8 @@ builds:
       - freebsd
       - openbsd
       - plan9
+    ldflags:
+      - -X github.com/shoenig/ssh-key-sync/version.Version={{.Version}}
 checksum:
   name_template: 'checksums.txt'
 snapshot:
