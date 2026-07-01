@@ -17,7 +17,7 @@ jobs:
           - macos-26
     runs-on: ${{matrix.os}}
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v7
         with:
           fetch-tags: true
       - uses: extractions/setup-just@53165ef7e734c5c07cb06b3c8e7b647c5aa16db3
